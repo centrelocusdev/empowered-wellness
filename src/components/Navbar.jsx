@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {BiMenu, BiX} from "react-icons/bi"
 import logo from "../assets/images/logo.png"
 import ButtonPrimary from "./ButtonPrimary";
+import { Link } from "react-router-dom";
 
 const Navbar = ({isWhite}) => {
   const navigate = useNavigate()
@@ -22,9 +23,9 @@ const Navbar = ({isWhite}) => {
     <img src={logo} alt="logo" className="w-20 cursor-pointer text-3xl font-bold hidden md:block" />
 
       <div className="flex md:flex-row flex-col gap-4 justify-start md:items-center md:mt-0 mt-5 ">
-        <button onClick={(e) => navigate('#')} className="w-fit cursor-pointer hover:text-sky-400">Feedback</button>
-        <button onClick={(e) => navigate('#')} className="w-fit cursor-pointer hover:text-sky-400">Crises support</button>
-        <button onClick={(e) => navigate('/register')} className="w-fit cursor-pointer hover:text-sky-400">Register</button>
+        <Link onClick={(e) => navigate('#')} className="w-fit cursor-pointer hover:text-sky-400">Feedback</Link>
+        <Link onClick={(e) => navigate('#')} className="w-fit cursor-pointer hover:text-sky-400">Crises support</Link>
+        <Link onClick={(e) => navigate('/register')} className="w-fit cursor-pointer hover:text-sky-400">Register</Link>
        <ButtonPrimary text={'Login'} handleClick={(e) => navigate('/login')} />
       </div>
     </div>

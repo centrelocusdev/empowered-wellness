@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import yoga from "../../assets/images/yoga.png";
 import InputPrimary from "../../components/InputPrimary";
 import {toast} from "react-toastify"
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -65,9 +66,9 @@ const Register = () => {
 
           <p className="text-gray-500 my-2">
             Already have an account? login{" "}
-            <a href="/login" className="text-sky-500 underline">
+            <Link to="/login" className="text-sky-500 underline">
               here
-            </a>
+            </Link>
           </p>
         </div>
       </div>
