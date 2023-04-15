@@ -10,6 +10,7 @@ export default {
         'light-yellow': '#F4E1C5',
         'light-skyblue': '#B9D4F8',
         'light-purple': '#B895BB',
+        'fade-brown': '#72612E',
       },
       fontFamily: {
         sans: ['Montserrat', 'sans-serif']
