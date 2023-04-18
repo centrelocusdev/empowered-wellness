@@ -7,10 +7,12 @@ import namaste from "../../assets/images/namaste.png";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import GradientText from "../../components/GradientText";
+import Modal from "../../components/Modal";
 
 const Home = () => {
   return (
     <section className="">
+      <Modal />
       <Navbar loggedin={true} />
       <div className="md:flex gap-8 justify-center w-full items-center md:px-16 p-8 text-gray-700">
         <div className="md:w-1/2">

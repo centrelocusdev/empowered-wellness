@@ -10,11 +10,13 @@ import user_circle from "../../assets/icons/user_circle.png";
 import GradientCards from "../../components/GradientCards";
 import LargeHeading from "../../components/LargeHeading";
 import Navbar from "../../components/Navbar";
+import Modal from "../../components/Modal";
 
 const Index = () => {
   const { name } = useParams();
   return (
     <>
+      <Modal />
       <Navbar loggedin={true} />
       <div className="md:px-8 px-4 md:w-4/5 mx-auto py-4">
         <LargeHeading
