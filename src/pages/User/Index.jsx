@@ -9,11 +9,13 @@ import user from "../../assets/icons/user.png";
 import user_circle from "../../assets/icons/user_circle.png";
 import GradientCards from "../../components/GradientCards";
 import LargeHeading from "../../components/LargeHeading";
+import Navbar from "../../components/Navbar";
 
 const Index = () => {
   const { name } = useParams();
   return (
     <>
+      <Navbar loggedin={true} />
       <div className="md:px-8 px-4 md:w-4/5 mx-auto py-4">
         <LargeHeading
           text={"Actions Good"}

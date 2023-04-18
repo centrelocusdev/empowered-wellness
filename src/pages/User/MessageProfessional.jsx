@@ -7,6 +7,7 @@ import { FiPlus, FiEdit, FiShare2, FiXCircle } from "react-icons/fi";
 import { MdOutlineDelete } from "react-icons/md";
 import { BiImageAdd } from "react-icons/bi";
 import { msg_prof } from "../../temp_db/msg_prof";
+import Navbar from "../../components/Navbar";
 
 const MessageProfessional = () => {
   const [details, setDetails] = useState("");
@@ -23,6 +24,7 @@ const MessageProfessional = () => {
 
   return (
     <>
+    <Navbar />
       <div className="px-8 md:w-4/5 mx-auto py-4">
         <div className={`${close == false && "hidden"}`}>
           <div className="">

@@ -8,6 +8,7 @@ import heart from "../../assets/icons/heart.png";
 import hash from "../../assets/icons/hash.png";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { BiSad, BiChevronLeft } from "react-icons/bi"
+import Navbar from "../../components/Navbar";
 
 const Assessments = () => {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ const Assessments = () => {
 
   return (
     <>
+    <Navbar />
       {type === undefined && (
         <div className="">
           <div className="md:px-8 px-4 md:w-4/5 mx-auto py-4">

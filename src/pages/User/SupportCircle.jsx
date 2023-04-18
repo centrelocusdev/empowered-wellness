@@ -2,10 +2,13 @@ import React from "react";
 import LargeHeading from "../../components/LargeHeading";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { BiShareAlt } from "react-icons/bi"
+import Navbar from "../../components/Navbar";
 
 const SupportCircle = () => {
   return (
-    <div className="md:px-8 px-4 md:w-4/5 mx-auto py-4 flex flex-col gap-4">
+    <>
+    <Navbar />
+      <div className="md:px-8 px-4 md:w-4/5 mx-auto py-4 flex flex-col gap-4">
       <LargeHeading text={"Share how you’re doing"} />
 
       <h4 className="font-semibold text-2xl text-gray-500 my-4">
@@ -33,6 +36,7 @@ const SupportCircle = () => {
       <ButtonPrimary text={'Share your data'} icon={<BiShareAlt />} />
       </div>
     </div>
+    </>
   );
 };
 

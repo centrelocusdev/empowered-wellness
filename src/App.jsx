@@ -15,11 +15,15 @@ const Register = lazy(() => import("./pages/general/Register"));
 const Login = lazy(() => import("./pages/general/Login"));
 const Index = lazy(() => import("./pages/User/Index"));
 import Navbar from "./components/Navbar";
+import CrisisSupport from "./pages/general/CrisisSupport";
+import Feedback from "./pages/general/Feedback";
+import Settings from "./pages/User/Settings";
+import MyStatistics from "./pages/User/MyStatistics";
 
 function App() {
   return (
     <section>
-      <Navbar />
+      {/* <Navbar /> */}
       <Suspense
         fallback={
           <div className="flex justify-center items-center min-h-screen bg-light-2 text-center text-4xl font-bold">
@@ -28,9 +32,11 @@ function App() {
         }
       >
         <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/crisis-support" element={<CrisisSupport />} />
+          <Route path="/feeback" element={<Feedback />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
           <Route path="/user" element={<Index />} />
           <Route path="/journal" element={<Journal />} />
           <Route path="/wellness-measure" element={<WellnessMeasure />} />
@@ -43,6 +49,8 @@ function App() {
             </Route>
           <Route path="/message-professional" element={<MessageProfessional />} />
           <Route path="/support-circle" element={<SupportCircle />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/my-statistics" element={<MyStatistics />} />
         </Routes>
       </Suspense>
       <ToastContainer />

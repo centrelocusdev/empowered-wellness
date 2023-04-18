@@ -6,6 +6,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import { BiImageAdd } from "react-icons/bi";
 import LargeHeading from "../../components/LargeHeading";
 import { journalData } from "../../temp_db/journal";
+import Navbar from "../../components/Navbar";
 
 const Journal = () => {
   const [details, setDetails] = useState("");
@@ -22,6 +23,7 @@ const Journal = () => {
 
   return (
     <>
+      <Navbar />
       <div className="px-8 md:w-4/5 mx-auto py-4">
         <div className={`${close == false && "hidden"}`}>
           <div className="">
@@ -40,9 +42,11 @@ const Journal = () => {
           <div className="mt-8  md:overflow-x-hidden overflow-x-scroll">
             <table className="mx-auto md:w-4/5 table-auto">
               <thead>
-                <th className="px-6 py-3 text-left">Title</th>
-                <th className="px-6 py-3 text-left">Creation Date</th>
-                <th className="px-6 py-3 text-left">Action</th>
+                <tr>
+                  <th className="px-6 py-3 text-left">Title</th>
+                  <th className="px-6 py-3 text-left">Creation Date</th>
+                  <th className="px-6 py-3 text-left">Action</th>
+                </tr>
               </thead>
               <tbody>
                 {journalData.map((d, key) => (

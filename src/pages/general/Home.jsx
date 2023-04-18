@@ -11,7 +11,7 @@ import GradientText from "../../components/GradientText";
 const Home = () => {
   return (
     <section className="">
-      {/* <Navbar /> */}
+      <Navbar loggedin={true} />
       <div className="md:flex gap-8 justify-center w-full items-center md:px-16 p-8 text-gray-700">
         <div className="md:w-1/2">
           <GradientText text={"Welcome to Empowered Wellbeing"} isUppercase={true} />

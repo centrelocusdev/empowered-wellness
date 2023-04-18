@@ -1,36 +1,117 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {BiMenu, BiX} from "react-icons/bi"
-import logo from "../assets/images/logo.png"
+import { useNavigate, useParams } from "react-router-dom";
+import { BiMenu, BiX } from "react-icons/bi";
+import { BsTextLeft } from "react-icons/bs";
+import logo from "../assets/images/logo.png";
 import ButtonPrimary from "./ButtonPrimary";
 import { Link } from "react-router-dom";
 
-const Navbar = ({isWhite}) => {
-  const navigate = useNavigate()
-  const [isOpen, setIsOpen] = useState(false)
+const Navbar = ({ loggedin }) => {
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [sidebar, setSidebar] = useState(false);
+  const currentTab = window.location.href.split('/')[3]
+
+  const handleSidebar = () => {
+    setSidebar((sidebar) => !sidebar);
+  };
 
   const handleClick = () => {
-    setIsOpen(isOpen => !isOpen)
-  }
+    setIsOpen((isOpen) => !isOpen);
+  };
 
   return (
     <section className="transition-all">
-    <div className="md:hidden block bg-fade-pink text-gray-50 p-4 flex justify-between text-gray-200">
-      <img src={logo} alt="logo" className="w-20" />
-      <button onClick={handleClick} className="text-4xl">{isOpen ? <BiX /> : <BiMenu />}</button>
-    </div>
-    <div className={`bg-white text-gray-700  md:flex justify-between py-3 md:px-16 px-8 md:h-auto h-screen transition-all ${isOpen ? 'block w-full fixed z-40 bg-fade-pink' : 'hidden'}`}>
-    <img src={logo} alt="logo" className="w-20 cursor-pointer text-3xl font-bold hidden md:block" />
-
-      <div className="flex md:flex-row flex-col gap-4 justify-start md:items-center md:mt-0 mt-5 ">
-        <Link onClick={(e) => navigate('#')} className="w-fit cursor-pointer hover:text-sky-400">Feedback</Link>
-        <Link onClick={(e) => navigate('#')} className="w-fit cursor-pointer hover:text-sky-400">Crises support</Link>
-        <Link onClick={(e) => navigate('/register')} className="w-fit cursor-pointer hover:text-sky-400">Register</Link>
-       <ButtonPrimary text={'Login'} handleClick={(e) => navigate('/login')} />
+      <div className="md:hidden bg-fade-pink text-gray-50 p-4 flex justify-between text-gray-200">
+        <div className="flex gap-1 md:hidden">
+          <img
+            src={logo}
+            alt="logo"
+            className="w-16 cursor-pointer text-3xl font-bold"
+          />
+          <button onClick={handleSidebar} className="text-2xl">
+            <BsTextLeft />
+          </button>
+        </div>
+        <button onClick={handleClick} className="text-4xl">
+          {isOpen ? <BiX /> : <BiMenu />}
+        </button>
       </div>
-    </div>
+      <div
+        className={`bg-white text-gray-700  md:flex justify-between`}
+      >
+        <div
+          className={`py-3 md:px-16 px-8 md:h-auto h-screen transition-all md:flex justify-between w-full  ${
+            isOpen ? "block w-full fixed z-40 bg-fade-pink" : "hidden"
+          }`}
+        >
+          <div className="md:flex hidden">
+            <img
+              src={logo}
+              alt="logo"
+              className="w-20 cursor-pointer text-3xl font-bold"
+            />
+            <button onClick={handleSidebar} className="text-2xl ml-3">
+              <BsTextLeft />
+            </button>
+          </div>
+
+          <div className="flex md:flex-row flex-col gap-4 justify-start md:items-center md:mt-0 mt-5 ">
+            <Link
+              to={"/feedback"}
+              className="w-fit cursor-pointer hover:text-sky-400"
+            >
+              Feedback
+            </Link>
+            <Link
+              to={"/crisis-support"}
+              className="w-fit cursor-pointer hover:text-sky-400"
+            >
+              Crises support
+            </Link>
+            <Link
+              onClick={(e) => navigate("/register")}
+              className="w-fit cursor-pointer hover:text-sky-400"
+            >
+              Register
+            </Link>
+            <ButtonPrimary
+              text={"Login"}
+              handleClick={(e) => navigate("/login")}
+            />
+          </div>
+        </div>
+
+        {sidebar && (
+          <div
+            onClick={handleSidebar}
+            className="bg-[rgba(0,0,0,0.4)] -translate-y-24 md:translate-y-0 w-full fixed z-10"
+          >
+            <div className="h-screen mt-20 mx-2 w-[300px] bg-gray-200 rounded-3xl p-8">
+              {actions.map((action, key) => (
+                <Link to={`/${action}`} key={key}>
+                  <div className={`w-full text-lg font-semibold px-6 py-2 text-center rounded-full hover:bg-gray-800 hover:text-white hover:font-normal capitalize ${currentTab == action && 'bg-gray-800 text-white font-normal'}`}>
+                    {action}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </section>
   );
 };
+
+const actions = [
+  "assessments",
+  "journal",
+  "wellness-measure",
+  "vision-board",
+  "mindfulness",
+  "support-circle",
+  "settings",
+  "my-statistics",
+];
 
 export default Navbar;
