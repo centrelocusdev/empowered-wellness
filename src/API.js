@@ -15,10 +15,10 @@ const refresh_token = Cookies.get("refresh-token");
 // }, 3600)
 
 export const register = async (formData) => {
+  const res = await axios.post(`${url}/register/`, formData);
+  Cookies.set("access-token", res.data.access);
+  Cookies.set("refresh-token", res.data.refresh);
   try {
-    const res = await axios.post(`${url}/register/`, formData);
-    Cookies.set("access-token", res.data.access);
-    Cookies.set("refresh-token", res.data.refresh);
     toast.success("user logged in successfuly");
     return true;
   } catch (err) {
@@ -28,14 +28,24 @@ export const register = async (formData) => {
 };
 
 export const login = async (formData) => {
+  const res = await axios.post(`${url}/login/`, formData);
+  Cookies.set("access-token", res.data.access);
+  Cookies.set("refresh-token", res.data.refresh);
   try {
-    const res = await axios.post(`${url}/login/`, formData);
-    Cookies.set("access-token", res.data.access);
-    Cookies.set("refresh-token", res.data.refresh);
     toast.success("user logged in successfuly");
     return true;
   } catch (err) {
-    console.log(err)
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const forgetPassword = async (email) => {
+  try {
+    const res = await axios.post(`${url}/password_reset/`, {email})
+    return res.data
+  } catch (err) {
+    console.log(err);
     toast.error(err.response.data.error);
     return;
   }
