@@ -1,10 +1,12 @@
 import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import yoga from "../../assets/images/yoga.png";
 import InputPrimary from "../../components/InputPrimary";
-import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { login } from "../../API";
 
 const Login = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -19,8 +21,9 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormData({ email: "", password: "" });
-    toast.success('User logged in')
+    const res = await login(formData)
+    res && navigate('/user')
+    res && setFormData({ email: "", password: "" });
   };
 
   return (

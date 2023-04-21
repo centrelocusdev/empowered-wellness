@@ -1,31 +1,40 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import yoga from "../../assets/images/yoga.png";
 import InputPrimary from "../../components/InputPrimary";
-import {toast} from "react-toastify"
 import { Link } from "react-router-dom";
+import { register } from "../../API";
 
 const Register = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    name: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    password: ""
-  })
+    mobile: "",
+    password: "",
+    confirm_password: "",
+  });
 
   const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success('User Registered!')
-    setFormData({
-      name: "",
+    const res = await register(formData)
+    res && navigate('/user')
+    res && setFormData({
+      first_name: "",
+      last_name: "",
       email: "",
-      password: ""
-    })
+      mobile: "",
+      password: "",
+      confirm_password: "",
+    });
   };
 
   return (
@@ -40,24 +49,48 @@ const Register = () => {
           </h2>
 
           <form onChange={handleChange} onSubmit={handleSubmit}>
-            <InputPrimary
-              label={"name"}
-              name={"name"}
-              placeholer={"John Doe"}
-              width={'full'}
-            />
-            <InputPrimary
-              label={"email"}
-              name={"email"}
-              placeholer={"johnedoe@gmai.com"}
-              width={'full'}
-            />
-            <InputPrimary
-              label={"password"}
-              name={"password"}
-              placeholer={"password"}
-              width={'full'}
-            />
+            <div className="md:flex gap-4">
+              <InputPrimary
+                label={"first name"}
+                name={"first_name"}
+                placeholer={"John"}
+                width={"full"}
+              />
+              <InputPrimary
+                label={"last name"}
+                name={"last_name"}
+                placeholer={"Doe"}
+                width={"full"}
+              />
+            </div>
+            <div className="md:flex gap-4">
+              <InputPrimary
+                label={"email"}
+                name={"email"}
+                placeholer={"johnedoe@gmai.com"}
+                width={"full"}
+              />
+              <InputPrimary
+                label={"mobile"}
+                name={"mobile"}
+                placeholer={"xxxxxx1234"}
+                width={"full"}
+              />
+            </div>
+            <div className="md:flex gap-4">
+              <InputPrimary
+                label={"password"}
+                name={"password"}
+                placeholer={""}
+                width={"full"}
+              />
+              <InputPrimary
+                label={"confirm password"}
+                name={"confirm_password"}
+                placeholer={""}
+                width={"full"}
+              />
+            </div>
 
             <button className="bg-gray-900 text-white rounded-lg text-center py-2 w-full mt-5 text-xl">
               Submit

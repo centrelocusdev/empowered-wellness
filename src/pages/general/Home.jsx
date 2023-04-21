@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { BsArrowRight, BsCheckLg } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
@@ -10,13 +10,17 @@ import GradientText from "../../components/GradientText";
 import Modal from "../../components/Modal";
 
 const Home = () => {
+  const navigate = useNavigate()
   return (
     <section className="">
-      <Modal />
+      <Modal /> 
       <Navbar loggedin={true} />
       <div className="md:flex gap-8 justify-center w-full items-center md:px-16 p-8 text-gray-700">
         <div className="md:w-1/2">
-          <GradientText text={"Welcome to Empowered Wellbeing"} isUppercase={true} />
+          <GradientText
+            text={"Welcome to Empowered Wellbeing"}
+            isUppercase={true}
+          />
           <h2 className="md:text-5xl text-3xl tracking-wide">
             Your Personal Mental Health Companion
           </h2>
@@ -33,9 +37,9 @@ const Home = () => {
 
           <div className="flex md:flex-row flex-col md:justify-start justify-center">
             <ButtonPrimary
-              text={"Go to dashboard"}
+              text={"dashboard"}
               icon={<BsArrowRight />}
-              handleClick={(e) => navigate("/")}
+              handleClick={(e) => navigate("/user")}
             />
             <ButtonPrimary
               text={"Sign up"}
@@ -50,7 +54,6 @@ const Home = () => {
           <img src={relaxed} alt="relaxed yoga girl" className="" />
         </div>
       </div>
-
       <div className="bg-gray-50 md:p-16 p-8">
         <div className="md:text-center md:w-2/3 mx-auto ">
           <GradientText
@@ -65,8 +68,8 @@ const Home = () => {
 
         <div className="md:flex justify-between gap-6 md:mt-8 ">
           <div className="md:w-1/3">
-            {left_features.map((f) => (
-              <div className="my-5">
+            {left_features.map((f, key) => (
+              <div key={key} className="my-5">
                 <h6 className="font-semibold text-lg text-fade-pink flex items-center gap-1">
                   <BsCheckLg />
                   <GradientText text={f.title} />
@@ -79,8 +82,8 @@ const Home = () => {
             <img src={namaste} alt="Yoga image" className="rounded-full" />
           </div>
           <div className="md:w-1/3">
-            {right_features.map((f) => (
-              <div className="my-5">
+            {right_features.map((f, key) => (
+              <div key={key} className="my-5">
                 <h6 className="font-semibold text-lg text-fade-pink flex items-center gap-1">
                   <BsCheckLg />
                   <GradientText text={f.title} />
@@ -91,9 +94,11 @@ const Home = () => {
           </div>
         </div>
       </div>
-
       <div className="md:p-16 p-8 md:w-2/3 mx-auto flex flex-col justify-center items-center text-center">
-        <GradientText text={'Join the Empowered Wellbeing Community'} fontSize={'3xl'} />
+        <GradientText
+          text={"Join the Empowered Wellbeing Community"}
+          fontSize={"3xl"}
+        />
 
         <p className="text-gray-500 tracking-6 mt-5">
           Take the first step towards a happier, healthier life with Empowered
@@ -103,9 +108,8 @@ const Home = () => {
           those we care about.
         </p>
 
-        <ButtonPrimary text={"sign up"} />
+        <ButtonPrimary text={"sign up"} handleClick={(e) => navigate('/register')} />
       </div>
-
       <Footer />
     </section>
   );
@@ -140,7 +144,7 @@ const right_features = [
     desc: "Share your progress, goals, and insights with your support circle, including friends, family, and mental health professionals. Stay connected and empowered on your journey to wellness.",
   },
   {
-    title: "My Professional",
+    title: "Message Professional",
     desc: "Easily store and manage contact information for your healthcare providers, therapists, and other support professionals, creating a seamless network of care.",
   },
 ];

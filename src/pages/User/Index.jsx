@@ -36,32 +36,30 @@ const data = [
   {
     icon: file,
     title: "journal",
-    desc: "Journaling helps to control your mental health and to improve your mood by: helping you prioritize problems, fears, and Read More",
+    desc: "Unlock the power of self-expression with our secure, easy-to-use journaling feature. Record your thoughts, feelings, and experiences to gain clarity, self-awareness, and emotional healing.",
     url: "/journal",
   },
   {
     icon: tree,
     title: "Mindfulness",
-    desc: "Journaling helps to control your mental health and to improve your mood by: helping you prioritize problems, fears, and Read More",
-    url: "/mindfulness",
+    desc: "Cultivate inner peace and relaxation with our guided imagery, deep breathing, and other mindfulness practices. Learn to manage stress, reduce anxiety, and enhance your overall well being.",
   },
   {
     icon: hash,
     title: "vision board",
-    desc: "Journaling helps to control your mental health and to improve your mood by: helping you prioritize problems, fears, and Read More",
+    desc: "Visualize your goals and dreams with our customizable vision board feature. Create a personal collage of images, affirmations, and quotes that inspire and motivate you to reach your full potential.",
     url: "/vision-board",
   },
   {
     icon: smile,
     title: "Wellness measures",
-    desc: "Journaling helps to control your mental health and to improve your mood by: helping you prioritize problems, fears, and Read More",
+    desc: "Gain valuable insights into your emotional wellbeing with our mental health assessments.",
     url: "/wellness-measure",
   },
   {
     icon: user,
     title: "Message Professional",
-    desc: "Journaling helps to control your mental health and to improve your mood by: helping you prioritize problems, fears, and Read More",
-    url: "/message-professional",
+    desc: "Easily store and manage contact information for your healthcare providers, therapists, and other support professionals, creating a seamless network of care.",
   },
   {
     icon: board,
@@ -72,8 +70,14 @@ const data = [
   {
     icon: user_circle,
     title: "Support Circle",
-    desc: "Journaling helps to control your mental health and to improve your mood by: helping you prioritize problems, fears, and Read More",
+    desc: "Share your progress, goals, and insights with your support circle, including friends, family, and mental health professionals. Stay connected and empowered on your journey to wellness.",
     url: "/support-circle",
+  },
+  {
+    icon: smile,
+    title: "Crisis Support",
+    desc: "Journaling helps to control your mental health and to improve your mood by: helping you prioritize problems, fears, and Read More",
+    url: "/crisis-support",
   },
 ];
 

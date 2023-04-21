@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonPrimary from "./ButtonPrimary";
 
@@ -6,8 +6,13 @@ const Modal = () => {
   const navigate = useNavigate()
   const [close, setClose] = useState(false);
   const handleCloseClick = () => {
+    console.log('clicked')
     setClose((close) => !close);
   };
+
+  useEffect(() => {
+    setClose(false)
+  }, [])
 
   return (
     <div className={`${close && 'hidden'}

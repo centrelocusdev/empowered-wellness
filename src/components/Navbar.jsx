@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiMenu, BiX } from "react-icons/bi";
 import { BsTextLeft } from "react-icons/bs";
 import logo from "../assets/images/logo.png";
 import ButtonPrimary from "./ButtonPrimary";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
+import { logout } from "../API";
 
 const Navbar = ({ loggedin }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [sidebar, setSidebar] = useState(false);
-  const currentTab = window.location.href.split('/')[3]
+  const currentTab = window.location.href.split("/")[3];
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleSidebar = () => {
     setSidebar((sidebar) => !sidebar);
@@ -19,6 +22,17 @@ const Navbar = ({ loggedin }) => {
   const handleClick = () => {
     setIsOpen((isOpen) => !isOpen);
   };
+
+  useEffect(() => {
+    const access_token = Cookies.get("access-token");
+    access_token && setIsLoggedIn(true);
+  }, []);
+
+  const handleLogoutClick = async () => {
+    const res = await logout()
+    res && setIsLoggedIn(false)
+    navigate('/')
+  }
 
   return (
     <section className="transition-all">
@@ -37,9 +51,7 @@ const Navbar = ({ loggedin }) => {
           {isOpen ? <BiX /> : <BiMenu />}
         </button>
       </div>
-      <div
-        className={`bg-white text-gray-700  md:flex justify-between`}
-      >
+      <div className={`bg-white text-gray-700  md:flex justify-between`}>
         <div
           className={`py-3 md:px-16 px-8 md:h-auto h-screen transition-all md:flex justify-between w-full  ${
             isOpen ? "block w-full fixed z-40 bg-fade-pink" : "hidden"
@@ -69,16 +81,25 @@ const Navbar = ({ loggedin }) => {
             >
               Crises support
             </Link>
-            <Link
-              onClick={(e) => navigate("/register")}
-              className="w-fit cursor-pointer hover:text-sky-400"
-            >
-              Register
-            </Link>
-            <ButtonPrimary
-              text={"Login"}
-              handleClick={(e) => navigate("/login")}
-            />
+            {isLoggedIn ? (
+              <ButtonPrimary
+                text={"Logout"}
+                handleClick={handleLogoutClick}
+              />
+            ) : (
+              <>
+                <Link
+                  to={"/register"}
+                  className="w-fit cursor-pointer hover:text-sky-400"
+                >
+                  Register
+                </Link>
+                <ButtonPrimary
+                  text={"Login"}
+                  handleClick={(e) => navigate("/login")}
+                />
+              </>
+            )}
           </div>
         </div>
 
@@ -90,7 +111,12 @@ const Navbar = ({ loggedin }) => {
             <div className="h-screen mt-20 mx-2 w-[300px] bg-gray-200 rounded-3xl p-8">
               {actions.map((action, key) => (
                 <Link to={`/${action}`} key={key}>
-                  <div className={`w-full text-lg font-semibold px-6 py-2 text-center rounded-full hover:bg-gray-800 hover:text-white hover:font-normal capitalize ${currentTab == action && 'bg-gray-800 text-white font-normal'}`}>
+                  <div
+                    className={`w-full text-lg font-semibold px-6 py-2 text-center rounded-full hover:bg-gray-800 hover:text-white hover:font-normal capitalize ${
+                      currentTab == action &&
+                      "bg-gray-800 text-white font-normal"
+                    }`}
+                  >
                     {action}
                   </div>
                 </Link>

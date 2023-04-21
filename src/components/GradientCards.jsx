@@ -35,9 +35,7 @@ const GradientCards = ({ data, bg }) => {
           key={index}
           className={`md:w-1/4 p-6 shadow-lg rounded-2xl text-gray-600 bg-gradient-to-bl ${
             gradientColors[index % gradientColors.length]
-          }  cursor-pointer  hover:bg-gradient-to-tr ${
-            d.phone && "flex justify-between flex-col"
-          }`}
+          }  cursor-pointer  hover:bg-gradient-to-tr flex justify-between flex-col`}
         >
           <div>
             <img src={d.icon} alt="" className="w-5" />
@@ -51,7 +49,7 @@ const GradientCards = ({ data, bg }) => {
           {d.phone ? (
             <ButtonPrimary text={d.phone} icon={<BiPhone />} />
           ) : (
-            <div className="float-right">
+            <div className="flex justify-end">
               <ButtonPrimary
                 icon={<FaArrowRight />}
                 handleClick={(e) => handleClick(d.url)}

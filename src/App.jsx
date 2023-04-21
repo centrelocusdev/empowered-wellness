@@ -1,8 +1,9 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { FaSpinner } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
+import { FaSpinner } from "react-icons/fa";
+import PvtRoutes from "./PvtRoutes";
 import Journal from "./pages/User/Journal";
 import Assessments from "./pages/User/Assessments";
 import WellnessMeasure from "./pages/User/WellnessMeasure";
@@ -34,23 +35,28 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/crisis-support" element={<CrisisSupport />} />
-          <Route path="/feeback" element={<Feedback />} />
+          <Route path="/feedback" element={<Feedback />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/user" element={<Index />} />
-          <Route path="/journal" element={<Journal />} />
-          <Route path="/wellness-measure" element={<WellnessMeasure />} />
-          <Route path="assessments" element={<Assessments />}>
-            <Route path=":type" element />
-          </Route>
-          <Route path="/vision-board" element={<VisionBoard />} />
-          <Route path="mindfulness" element={<Mindfulness />}>
-            <Route path=":type" element />
+          <Route element={<PvtRoutes />}>
+            <Route path="/user" element={<Index />} />
+            <Route path="/journal" element={<Journal />} />
+            <Route path="/wellness-measure" element={<WellnessMeasure />} />
+            <Route path="assessments" element={<Assessments />}>
+              <Route path=":type" element />
             </Route>
-          <Route path="/message-professional" element={<MessageProfessional />} />
-          <Route path="/support-circle" element={<SupportCircle />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/my-statistics" element={<MyStatistics />} />
+            <Route path="/vision-board" element={<VisionBoard />} />
+            <Route path="mindfulness" element={<Mindfulness />}>
+              <Route path=":type" element />
+            </Route>
+            <Route
+              path="/message-professional"
+              element={<MessageProfessional />}
+            />
+            <Route path="/support-circle" element={<SupportCircle />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/my-statistics" element={<MyStatistics />} />
+          </Route>
         </Routes>
       </Suspense>
       <ToastContainer />
