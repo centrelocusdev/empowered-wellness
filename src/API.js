@@ -35,6 +35,7 @@ export const login = async (formData) => {
     toast.success("user logged in successfuly");
     return true;
   } catch (err) {
+    console.log(err)
     toast.error(err.response.data.error);
     return;
   }
