@@ -24,8 +24,9 @@ const GradientCards = ({ data, bg }) => {
   }, []);
 
   return (
-    <div
-      className={`flex justify-center w-full flex-wrap gap-8 p-8 bg-${
+    <div className="w-[80%] mx-auto mb-8">
+      <div
+      className={`flex justify-start mx-atuo flex-wrap gap-8 bg-${
         bg ? bg : "gray-100"
       }`}
     >
@@ -33,7 +34,7 @@ const GradientCards = ({ data, bg }) => {
         <div
           onClick={(e) => handleClick(d.url)}
           key={index}
-          className={`md:w-1/4 p-6 shadow-lg rounded-2xl text-gray-600 bg-gradient-to-bl ${
+          className={`md:w-[30%] self-auto p-6 shadow-lg rounded-2xl text-gray-600 bg-gradient-to-bl ${
             gradientColors[index % gradientColors.length]
           }  cursor-pointer  hover:bg-gradient-to-tr flex justify-between flex-col`}
         >
@@ -58,6 +59,7 @@ const GradientCards = ({ data, bg }) => {
           )}
         </div>
       ))}
+    </div>
     </div>
   );
 };
