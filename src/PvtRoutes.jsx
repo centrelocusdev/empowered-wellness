@@ -3,10 +3,7 @@ import Cookies from "js-cookie";
 
 const PvtRoutes = () => {
   let auth = Cookies.get('access-token')
-  //temp until vercel domain gets whitelist
-  // return auth ? <Outlet /> : <Navigate to="/login" />
-
-  return <Outlet />
+  return auth ? <Outlet /> : <Navigate to="/login" />
 }
 
 export default PvtRoutes
