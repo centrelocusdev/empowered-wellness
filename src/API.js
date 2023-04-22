@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 const url = "https://ew.thedelvierypointe.com/api";
-const access_token = Cookies.get("access-token");
 const refresh_token = Cookies.get("refresh-token");
 
 // setInterval(() => {
@@ -13,6 +12,11 @@ const refresh_token = Cookies.get("refresh-token");
 //     })
 //   }
 // }, 3600)
+
+const headers = {
+  Authorization: `Bearer ${Cookies.get("access-token")}`,
+  "content-type": "multipart/form-data",
+};
 
 export const register = async (formData) => {
   const res = await axios.post(`${url}/register/`, formData);
@@ -42,8 +46,8 @@ export const login = async (formData) => {
 
 export const forgetPassword = async (email) => {
   try {
-    const res = await axios.post(`${url}/password_reset/`, {email})
-    return res.data
+    const res = await axios.post(`${url}/password_reset/`, { email });
+    return res.data;
   } catch (err) {
     console.log(err);
     toast.error(err.response.data.error);
@@ -59,6 +63,159 @@ export const logout = async () => {
     const res = await axios.post(`${url}/logout/`, { refresh: refresh_token });
     res.data && toast.success("logging out");
     return true;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const updateUserInfo = async (formData) => {
+  try {
+    const res = await axios.patch(`${url}/update-user-info/`, formData, {
+      headers,
+    });
+    res.data && toast.success("update user profile info");
+    return true;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const updateUserProfie = async (formData) => {
+  try {
+    const res = await axios.patch(`${url}/update_profile/`, formData, {
+      headers,
+    });
+    res.data && toast.success("update user profile info");
+    return true;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const moodTest = async (formData) => {
+  try {
+    console.log(formData);
+    const res = await axios.put(`${url}/mood-data/`, formData, { headers });
+    toast.success("your response has been recorded");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const createJournal = async (formData) => {
+  try {
+    const res = await axios.put(`${url}/journal/`, formData, { headers });
+    toast.success("your new journal has been added");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const updateJournal = async (formData) => {
+  try {
+    const res = await axios.patch(`${url}/journal/`, formData, { headers });
+    toast.success("your new journal has been added");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const deleteJournal = async (id) => {
+  try {
+    const res = await axios.delete(`${url}/journal/`, id, { headers });
+    toast.success("your new journal has been added");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const getAssessmentQuestions = async () => {
+  try {
+    const res = await axios.post(
+      `${url}/assessments/questions/`,
+      {
+        assessment_id: "",
+      },
+      { headers }
+    );
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const getCompletedAssessments = async () => {
+  try {
+    const res = await axios.get(`${url}/assessments/user-responses/`, {
+      headers,
+    });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const saveAssessment = async () => {
+  try {
+    const res = await axios.post(`${url}/assessments/save/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const getAudioFiles = async () => {
+  try {
+    const res = await axios.get(`${url}/audio/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const getMessages = async () => {
+  try {
+    const res = await axios.get(`${url}/user/messages/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const markMessageAsRead = async (message_id) => {
+  try {
+    const res = await axios.put(`${url}/user/messages/${message_id}/read/`, {
+      headers,
+    });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const sendMessage = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/user/send-message/`, formData, {
+      headers,
+    });
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;

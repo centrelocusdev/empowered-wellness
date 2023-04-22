@@ -3,12 +3,13 @@ import LargeHeading from "../../components/LargeHeading";
 import GradientText from "../../components/GradientText";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import Navbar from "../../components/Navbar";
+import { moodTest } from "../../API";
 
 const WellnessMeasure = () => {
   const [formData, setFormData] = useState({
-    stress: "3",
-    despression: "3",
-    anxiety: "3",
+    stress: "0",
+    anxiety: "0",
+    depression: "0",
   });
 
   const handleChange = (e) => {
@@ -18,12 +19,13 @@ const WellnessMeasure = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    const res = await moodTest(formData)
+    console.log(res)
   };
 
-  const inputs = ["stress", "depression", "anxiety"];
+  const inputs = ["stress", "anxiety", "depression"];
 
   return (
     <>
@@ -50,6 +52,8 @@ const WellnessMeasure = () => {
             {inputs.map((input, key) => (
               <div key={key} className="md:flex gap-3 items-center mt-5">
                 <label className="text-xl md:w-2/5 capitalize">{input}</label>
+                <div className="flex gap-1">
+                <span className="">{formData[input]}</span>
                 <input
                   type="range"
                   name={input}
@@ -58,6 +62,7 @@ const WellnessMeasure = () => {
                   className="w-full accent-gray-800 bg-gray-300 rounded-full range"
                 />{" "}
                 <span>10</span>
+                </div>
               </div>
             ))}
 

@@ -29,10 +29,10 @@ const Navbar = ({ loggedin }) => {
   }, []);
 
   const handleLogoutClick = async () => {
-    const res = await logout()
-    res && setIsLoggedIn(false)
-    navigate('/')
-  }
+    const res = await logout();
+    res && setIsLoggedIn(false);
+    navigate("/");
+  };
 
   return (
     <section className="transition-all">
@@ -43,9 +43,11 @@ const Navbar = ({ loggedin }) => {
             alt="logo"
             className="w-16 cursor-pointer text-3xl font-bold"
           />
-          <button onClick={handleSidebar} className="text-2xl">
-            <BsTextLeft />
-          </button>
+          {isLoggedIn && (
+            <button onClick={handleSidebar} className="text-2xl">
+              <BsTextLeft />
+            </button>
+          )}
         </div>
         <button onClick={handleClick} className="text-4xl">
           {isOpen ? <BiX /> : <BiMenu />}
@@ -63,9 +65,11 @@ const Navbar = ({ loggedin }) => {
               alt="logo"
               className="w-20 cursor-pointer text-3xl font-bold"
             />
-            <button onClick={handleSidebar} className="text-2xl ml-3">
+           {isLoggedIn && (
+            <button onClick={handleSidebar} className="text-2xl">
               <BsTextLeft />
             </button>
+          )}
           </div>
 
           <div className="flex md:flex-row flex-col gap-4 justify-start md:items-center md:mt-0 mt-5 ">
@@ -82,10 +86,7 @@ const Navbar = ({ loggedin }) => {
               Crises support
             </Link>
             {isLoggedIn ? (
-              <ButtonPrimary
-                text={"Logout"}
-                handleClick={handleLogoutClick}
-              />
+              <ButtonPrimary text={"Logout"} handleClick={handleLogoutClick} />
             ) : (
               <>
                 <Link
