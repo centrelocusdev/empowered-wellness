@@ -43,6 +43,7 @@ const data = [
     icon: tree,
     title: "Mindfulness",
     desc: "Cultivate inner peace and relaxation with our guided imagery, deep breathing, and other mindfulness practices. Learn to manage stress, reduce anxiety, and enhance your overall well being.",
+    url: '/mindfulness'
   },
   {
     icon: hash,

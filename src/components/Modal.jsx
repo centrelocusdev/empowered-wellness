@@ -6,7 +6,6 @@ const Modal = () => {
   const navigate = useNavigate()
   const [close, setClose] = useState(false);
   const handleCloseClick = () => {
-    console.log('clicked')
     setClose((close) => !close);
   };
 
