@@ -110,25 +110,25 @@ export const moodTest = async (formData) => {
 export const getAllJournals = async () => {
   try {
     const res = await axios.get(`${url}/journal/`, { headers });
-    return res.data
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
   }
-}
+};
 
 export const createJournal = async (formData) => {
   try {
     if (!formData.title) {
-      toast.error('Title can not be empty') 
-      return
+      toast.error("Title can not be empty");
+      return;
     }
     const res = await axios.put(`${url}/journal/`, formData, { headers });
     toast.success("your new journal has been added");
     return res.data;
   } catch (err) {
-    err.response.data?.image[0] && toast.error('Please select an image');
-    err.response.data?.text[0] && toast.error('Please enter description');
+    err.response.data?.image[0] && toast.error("Please select an image");
+    err.response.data?.text[0] && toast.error("Please enter description");
     return;
   }
 };
@@ -146,8 +146,11 @@ export const updateJournal = async (formData) => {
 
 export const deleteJournal = async (id) => {
   try {
-    const res = await axios.delete(`${url}/journal/`, {id}, { headers });
-    toast.success("your new journal has been added");
+    const res = await axios.delete(`${url}/journal/`, {
+      data: { id },
+      headers,
+    });
+    toast.success("The journal has been deleted");
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -155,15 +158,20 @@ export const deleteJournal = async (id) => {
   }
 };
 
-export const getAssessmentQuestions = async () => {
+export const getAssessmentsMeta = async () => {
   try {
-    const res = await axios.post(
-      `${url}/assessments/questions/`,
-      {
-        assessment_id: "",
-      },
-      { headers }
-    );
+    const res = await axios.get(`${url}/assessment/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const getAssessmentQuestions = async (id) => {
+  try {
+    const res = await axios.get(
+      `${url}/assessments/${id}/questions/`,{ headers });
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -183,9 +191,10 @@ export const getCompletedAssessments = async () => {
   }
 };
 
-export const saveAssessment = async () => {
+export const saveAssessment = async (response) => {
   try {
-    const res = await axios.post(`${url}/assessments/save/`, { headers });
+    const res = await axios.post(`${url}/assessments/save/`, response, { headers });
+    toast.success('Your response has been recorded')
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);

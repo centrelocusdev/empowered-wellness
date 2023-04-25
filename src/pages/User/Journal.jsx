@@ -55,21 +55,18 @@ const Journal = () => {
   const handleDeleteJournal = async (id) => {
     const res = await deleteJournal(id);
     console.log(id);
+    const journals = await getAllJournals();
+    setAllJournals(journals);
   };
 
   const handleUpdateJournalClick = async (id) => {
-    console.log({
-      id,
-      updatedTitle,
-      updatedText,
-      setUpdatedImage
-    }) 
     const res = await updateJournal({
       id,
-      updatedTitle,
-      updatedText,
-      setUpdatedImage
+      title: updatedTitle,
+      text: updatedText,
+      image: updatedImage
     })
+    setClose(true)
   }
 
   const handleEditClick = (d) => {

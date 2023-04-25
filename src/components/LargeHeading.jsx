@@ -16,7 +16,7 @@ const LargeHeading = ({text, desc, goTo}) => {
       </button>
       <h4 className="md:text-4xl text-2xl capitalize">{text}</h4>
     </div>
-      <p className="my-5 text-gray-500">{desc}</p>
+      <div className="my-5 text-gray-500">{desc}</div>
     </div>
   );
 };

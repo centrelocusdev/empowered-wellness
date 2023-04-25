@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LargeHeading from "../../components/LargeHeading";
 import GradientCards from "../../components/GradientCards";
@@ -7,17 +7,71 @@ import scale from "../../assets/icons/scale.png";
 import heart from "../../assets/icons/heart.png";
 import hash from "../../assets/icons/hash.png";
 import ButtonPrimary from "../../components/ButtonPrimary";
-import { BiSad, BiChevronLeft } from "react-icons/bi"
+import { BiSad, BiChevronLeft } from "react-icons/bi";
 import Navbar from "../../components/Navbar";
+import { getAssessmentQuestions, getAssessmentsMeta, saveAssessment } from "../../API";
 
 const Assessments = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { type } = useParams();
-  const types = ["dass", "phq", "epds"];
+  const types = ["DASS-21", "PHQ-9", "EPDS"];
+  const [assessments, setAssessments] = useState([]);
+  const [dassQuestions, setDassQuestions] = useState([]);
+  const [epdsQuestions, setEpdsQuestions] = useState([]);
+  const [phqQuestions, setPhqQuestions] = useState([]);
+  const icons = [scale, heart, hash];
+  const [dassRes, setDassRes] = useState([]);
+  const [epdsRes, setEpdsRes] = useState([]);
+  const [phqRes, setPhqRes] = useState([]);
+
+  useEffect(() => {
+    const runIt = async () => {
+      const res = await getAssessmentsMeta();
+      setAssessments(
+        res.map((r, i) => {
+          return {
+            id: r.id,
+            title: r.name,
+            desc: r.description,
+            url: `/assessments/${r.code}`,
+            icon: icons[i],
+          };
+        })
+      );
+
+      setDassQuestions(await getAssessmentQuestions(1));
+      setPhqQuestions(await getAssessmentQuestions(2));
+      setEpdsQuestions(await getAssessmentQuestions(3));
+    };
+
+    runIt();
+  }, []);
+
+  const handleCardClick = async (id) => {
+    console.log(id);
+    const res = await getAssessmentQuestions(id);
+    console.log(res);
+  };
+
+  const handleDassRes = (qId, oId) => {
+    const newResponses = [...dassRes];
+    const index = newResponses.findIndex((r) => r.question === qId);
+    if (index === -1) {
+      newResponses.push({ question: qId, option: oId });
+    } else {
+      newResponses[index].option = oId;
+    }
+    setDassRes(newResponses);
+  };
+
+  const handleDassSubmit = async () => {
+    const res = await saveAssessment({assessment: 1, responses: [...dassRes]})
+    console.log(res)
+  }
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       {type === undefined && (
         <div className="">
           <div className="md:px-8 px-4 md:w-4/5 mx-auto py-4">
@@ -29,7 +83,11 @@ const Assessments = () => {
             />
           </div>
 
-          <GradientCards data={data} bg={"white"} />
+          <GradientCards
+            data={assessments}
+            bg={"white"}
+            handleCardClick={handleCardClick}
+          />
         </div>
       )}
 
@@ -60,28 +118,30 @@ const Assessments = () => {
               goTo={"/assessments"}
             />
 
-            {dass.map(({ question, options }, index) => (
-              <div className="my-3 w-fit">
-                <h6 className="text-lg ">
-                  {index + 1}. {question}
+            {dassQuestions.map((q, index) => (
+              <div key={q.id} className="my-5 w-fit">
+                <h6 className="text-lg font-semibold text-gray-600">
+                  {q.id}. {q.text}
                 </h6>
-                <div className="flex gap-4 w-full justify-between">
-                  {Object.values(options).map((op) => (
-                    <div className="mt-2">
-                      {" "}
+                <div className="flex flex-col gap-3 mt-2 w-full justify-between">
+                  {q.options.map((option, i) => (
+                    <div key={option.id} className="">
                       <input
                         type="radio"
-                        name={index}
-                        className="focus:accent-gray-900 accent-gray-700"
+                        id={option.id}
+                        name={q.id}
+                        value={option.score}
+                        onChange={() => handleDassRes(q.id, option.score)}
+                        className="focus:accent-gray-900 accent-gray-800 mr-2"
                       />
-                      <label>{op}</label>
+                      <label>{option.text}</label>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
 
-            <ButtonPrimary text={'submit'} />
+            <ButtonPrimary text={"submit"} handleClick={handleDassSubmit} />
           </div>
         )}
         {type === types[1] && (
@@ -114,7 +174,7 @@ const Assessments = () => {
                 </div>
               </div>
             ))}
-            <ButtonPrimary text={'submit'} />
+            <ButtonPrimary text={"submit"} />
           </div>
         )}
         {type === types[2] && (
@@ -147,19 +207,20 @@ const Assessments = () => {
                 </div>
               </div>
             ))}
-            <ButtonPrimary text={'submit'} />
+            <ButtonPrimary text={"submit"} />
           </div>
         )}
-        {(!types.includes(type) && type != undefined) && (
+        {!types.includes(type) && type != undefined && (
           <div className="text-center md:text-4xl text-2xl flex flex-col items-center">
             <BiSad />
             <h2 className="">Oops! Bad Request</h2>
 
-            <ButtonPrimary text={'Go Back'} handleClick={(e) => navigate('/assessments')} />
+            <ButtonPrimary
+              text={"Go Back"}
+              handleClick={(e) => navigate("/assessments")}
+            />
           </div>
         )}
-
-        
       </div>
     </>
   );

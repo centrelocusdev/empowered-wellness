@@ -4,7 +4,7 @@ import ButtonPrimary from "./ButtonPrimary";
 import { useNavigate } from "react-router-dom";
 import { BiPhone } from "react-icons/bi";
 
-const GradientCards = ({ data, bg }) => {
+const GradientCards = ({ data, bg, handleCardClick }) => {
   const navigate = useNavigate();
   const [display, setDisplay] = useState(true);
   const gradientColors = [
@@ -14,8 +14,9 @@ const GradientCards = ({ data, bg }) => {
     "from-light-purple to-white",
   ];
 
-  const handleClick = (url) => {
+  const handleClick = (url, id) => {
     navigate(url);
+    handleCardClick(id)
     setDisplay(false);
   };
 
@@ -32,7 +33,7 @@ const GradientCards = ({ data, bg }) => {
     >
       {data.map((d, index) => (
         <div
-          onClick={(e) => handleClick(d.url)}
+          onClick={(e) => handleClick(d.url, d?.id)}
           key={index}
           className={`md:w-[30%] self-auto p-6 shadow-lg rounded-2xl text-gray-600 bg-gradient-to-bl ${
             gradientColors[index % gradientColors.length]
