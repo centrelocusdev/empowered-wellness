@@ -2,14 +2,23 @@ import React, { useEffect, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import SettingsInput from "../../components/SettingsInput";
-import { UpdatePassword } from "../../API";
+import { UpdatePassword, getUserBasicInfo } from "../../API";
 
-const ChangePassword = ({ user }) => {
+const ChangePassword = () => {
   const [editable, setEditable] = useState(true);
-  const [email, setEmail] = useState(user.email);
-  const [currentPassword, setCurrentPassword] = useState(user.password);
+  const [email, setEmail] = useState();
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  useEffect(() => {
+    const runIt = async () => {
+      const user = await getUserBasicInfo();
+      setEmail(user.email);
+    };
+
+    runIt();
+  }, []);
 
   const handleEditClick = () => {
     setEditable((editable) => !editable);
@@ -27,27 +36,24 @@ const ChangePassword = ({ user }) => {
     setConfirmPassword(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(currentPassword, newPassword, confirmPassword);
-    const res = await UpdatePassword({
+    await UpdatePassword({
       currentPassword,
       newPassword,
       confirmPassword,
     });
-
-    console.log(res);
+    setCurrentPassword("")
+    setNewPassword("")
+    setConfirmPassword("")
+    setEditable(true)
   };
 
   return (
     <div>
       <div className="md:flex justify-between w-full border-b">
         <h5 className="md:text-4xl text-2xl text-fade-brown">
-          Login Information
+          Change Password
         </h5>
 
         <ButtonPrimary
@@ -61,9 +67,7 @@ const ChangePassword = ({ user }) => {
         <SettingsInput
           name={"email"}
           value={email}
-          isRequired={true}
           isDisbaled={true}
-          // handleChange={handleEmailChange}
         />
         <SettingsInput
           name={"current_password"}
@@ -74,24 +78,22 @@ const ChangePassword = ({ user }) => {
           handleChange={handleCurrentPasswordChange}
         />
 
-        {!editable && (
-          <>
-            <SettingsInput
-              name={"new_password"}
-              value={newPassword}
-              isRequired={true}
-              isDisbaled={editable}
-              handleChange={handleNewPasswordChange}
-            />
-            <SettingsInput
-              name={"confirm_password"}
-              value={confirmPassword}
-              isRequired={true}
-              isDisbaled={editable}
-              handleChange={handleConfirmPasswordChange}
-            />
-          </>
-        )}
+        <SettingsInput
+          type={"password"}
+          name={"new_password"}
+          value={newPassword}
+          isRequired={true}
+          isDisbaled={editable}
+          handleChange={handleNewPasswordChange}
+        />
+        <SettingsInput
+          type={"password"}
+          name={"confirm_password"}
+          value={confirmPassword}
+          isRequired={true}
+          isDisbaled={editable}
+          handleChange={handleConfirmPasswordChange}
+        />
 
         {!editable && (
           <ButtonPrimary text={"save changes"} handleClick={handleFormSubmit} />

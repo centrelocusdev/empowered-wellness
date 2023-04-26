@@ -1,36 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Select from "react-select";
-import { countries } from "countries-list";
 import arrow_circle from "../../assets/icons/left_arrow_circle.png";
 import user_temp from "../../assets/images/user_temp.png";
 import Navbar from "../../components/Navbar";
-import { BiEditAlt } from "react-icons/bi";
-import ButtonPrimary from "../../components/ButtonPrimary";
-import SettingsInput from "../../components/SettingsInput";
 import Profile from "./Profile";
 import LoginInfo from "./ChangePassword";
 import UserBasicInfo from "./UserBasicInfo";
-
-// REMINDER
-//fetch user data here and then pass it to the components
+import { getUserBasicInfo } from "../../API";
 
 const Settings = () => {
   const navigate = useNavigate();
   const tabs = ["basic info", "user profile", "change password"];
   const [tab, setTab] = useState(tabs[0]);
- 
-  const temp_user = {
-    email: 'user@example.com',
-    profilePic: user_temp,
-    fullname: 'test user',
-    username: 'testuser',
-    gender: 'female',
-    age: '23',
-    zip: '1233',
-    country: 'IN',
-    password: '123123'
-  }
+  const [user, setUser] = useState('')
+  useEffect(() => {
+    const runIt = async () => {
+      const res = await getUserBasicInfo();
+      setUser(res)
+    };
+
+    runIt();
+  }, []);
 
   const handleTab = (e) => {
     setTab(e.target.textContent);
@@ -46,11 +36,11 @@ const Settings = () => {
             <img src={arrow_circle} className="w-12" />
           </button>
           <div className="flex gap-3">
-            <img src={temp_user.profilePic} className="rounded-full w-20" />
+            <img src={user.profile_picture ? user.profile_picture: user_temp } className="rounded-full w-20" />
 
             <div>
               <h5 className="text-4xl">Settings</h5>
-              <p className="text-lg mt-1">{temp_user.email}</p>
+              <p className="text-lg mt-1">{user.email}</p>
             </div>
           </div>
         </div>
@@ -69,9 +59,9 @@ const Settings = () => {
         </div>
 
         {/* forms */}
-        {tab == tabs[0] && <UserBasicInfo user={temp_user} />}
-        {tab == tabs[1] && <Profile user={temp_user} />}
-        {tab == tabs[2] && <LoginInfo user={temp_user} />}
+        {tab == tabs[0] && <UserBasicInfo user={user} />}
+        {tab == tabs[1] && <Profile user={user} />}
+        {tab == tabs[2] && <LoginInfo user={user} />}
       </div>
     </>
   );

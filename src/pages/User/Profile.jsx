@@ -4,8 +4,9 @@ import { countries } from "countries-list";
 import { BiEditAlt } from "react-icons/bi";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import SettingsInput from "../../components/SettingsInput";
+import { getUserBasicInfo, getUserProfile } from "../../API";
 
-const Profile = ({ user }) => {
+const Profile = () => {
   const [editable, setEditable] = useState(true);
   const [about, setAbout] = useState("");
   const [profilePic, setProfilePic] = useState("");
@@ -14,15 +15,16 @@ const Profile = ({ user }) => {
   const [country, setCountry] = useState("");
   const [gender, setGender] = useState("");
 
-  const initData = () => {
-    setAge(user.age);
-    setZip(user.zip);
-    setGender(user.gender);
-    setCountry(user.country);
-  };
-
   useEffect(() => {
-    initData();
+    const runIt = async () => {
+      const user = await getUserProfile();
+      setAge(user.age);
+      setZip(user.zip);
+      setGender(user.gender);
+      setCountry(user.country);
+    };
+
+    runIt();
   }, []);
 
   const handleEditClick = () => {
@@ -67,7 +69,7 @@ const Profile = ({ user }) => {
       gender,
       country,
       about,
-      profilePic
+      profilePic,
     };
 
     console.log(formData);
@@ -130,7 +132,7 @@ const Profile = ({ user }) => {
               value={country}
               onChange={handleCountryChange}
               isDisabled={editable}
-              placeholder={country.label}
+              placeholder={country?.label}
             />
           </div>
         </div>

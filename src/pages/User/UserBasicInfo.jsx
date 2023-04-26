@@ -4,21 +4,23 @@ import { countries } from "countries-list";
 import { BiEditAlt } from "react-icons/bi";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import SettingsInput from "../../components/SettingsInput";
+import { getUserBasicInfo, updateUserBasicInfo } from "../../API";
 
-const UserBasicInfo = ({ user }) => {
+const UserBasicInfo = () => {
   const [editable, setEditable] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [mobile, setMobile] = useState("");
 
-  const initData = () => {
-    setFirstName(user.first_name);
-    setLastName(user.last_name);
-    setMobile(user.mobile);
-  };
-
   useEffect(() => {
-    initData();
+    const runIt = async () => {
+      const user = await getUserBasicInfo();
+      setFirstName(user.first_name);
+      setLastName(user.last_name);
+      setMobile(user.mobile);
+    };
+
+    runIt();
   }, []);
 
   const handleEditClick = () => {
@@ -26,33 +28,33 @@ const UserBasicInfo = ({ user }) => {
   };
 
   const handleFirstNameChange = (e) => {
-    setFullname(e.target.value);
+    setFirstName(e.target.value);
   };
 
   const handleLastNameChange = (e) => {
-    setUsername(e.target.value);
+    setLastName(e.target.value);
   };
 
   const handleMobileChange = (e) => {
     setMobile(e.target.value);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("formSubmit clicked");
-    const formData = {
+    const res = await updateUserBasicInfo({
       first_name: firstName,
       last_name: lastName,
-      mobile
-    };
-
-    console.log(formData);
+      mobile,
+    });
+    setEditable(true)
   };
 
   return (
     <div>
       <div className="md:flex justify-between w-full border-b">
-        <h5 className="md:text-4xl text-2xl text-fade-brown">Basic Information</h5>
+        <h5 className="md:text-4xl text-2xl text-fade-brown">
+          Basic Information
+        </h5>
 
         <ButtonPrimary
           text={"edit"}

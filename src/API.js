@@ -23,7 +23,7 @@ export const register = async (formData) => {
   Cookies.set("access-token", res.data.access);
   Cookies.set("refresh-token", res.data.refresh);
   try {
-    toast.success("user logged in successfuly");
+    toast.success("user logged in successfully");
     return true;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -36,7 +36,7 @@ export const login = async (formData) => {
   Cookies.set("access-token", res.data.access);
   Cookies.set("refresh-token", res.data.refresh);
   try {
-    toast.success("user logged in successfuly");
+    toast.success("user logged in successfully");
     return true;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -69,9 +69,19 @@ export const logout = async () => {
   }
 };
 
-export const updateUserInfo = async (formData) => {
+export const getUserBasicInfo = async () => {
   try {
-    const res = await axios.patch(`${url}/update-user-info/`, formData, {
+    const res = await axios.get(`${url}/update_user_info/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const updateUserBasicInfo = async (formData) => {
+  try {
+    const res = await axios.patch(`${url}/update_user_info/`, formData, {
       headers,
     });
     res.data && toast.success("update user profile info");
@@ -82,7 +92,17 @@ export const updateUserInfo = async (formData) => {
   }
 };
 
-export const updateUserProfie = async (formData) => {
+export const getUserProfile = async () => {
+  try {
+    const res = await axios.get(`${url}/user_profile/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const updateUserProfile = async (formData) => {
   try {
     const res = await axios.patch(`${url}/update_profile/`, formData, {
       headers,
@@ -97,16 +117,23 @@ export const updateUserProfie = async (formData) => {
 
 export const UpdatePassword = async (formData) => {
   try {
-    console.log(formData.newPassword, formData.confirmPassword)
-    if(formData.newPassword != formData.confirmPassword) {
-      toast.error('Confirm password does not match')
-      return
+    console.log(formData.newPassword, formData.confirmPassword);
+    if (formData.newPassword != formData.confirmPassword) {
+      toast.error("Confirm password does not match");
+      return;
     }
-    const res = await axios.put(`${url}/change-password/`, {old_password: formData.currentPassword, new_password: formData.newPassword}, {
-      headers,
-    });
-    res.data && toast.success("update user profile info");
-    return res.data;
+    const res = await axios.put(
+      `${url}/change-password/`,
+      {
+        old_password: formData.currentPassword,
+        new_password: formData.newPassword,
+      },
+      {
+        headers,
+      }
+    );
+    res.data && toast.success("Password changed successfully");
+    return true;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
@@ -188,8 +215,9 @@ export const getAssessmentsMeta = async () => {
 
 export const getAssessmentQuestions = async (id) => {
   try {
-    const res = await axios.get(
-      `${url}/assessment/${id}/questions/`,{ headers });
+    const res = await axios.get(`${url}/assessment/${id}/questions/`, {
+      headers,
+    });
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -211,8 +239,10 @@ export const getCompletedAssessments = async () => {
 
 export const saveAssessment = async (response) => {
   try {
-    const res = await axios.post(`${url}/assessment/save/`, response, {headers});
-    toast.success('Your response has been recorded')
+    const res = await axios.post(`${url}/assessment/save/`, response, {
+      headers,
+    });
+    toast.success("Your response has been recorded");
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
