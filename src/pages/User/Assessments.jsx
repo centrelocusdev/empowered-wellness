@@ -9,7 +9,12 @@ import hash from "../../assets/icons/hash.png";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { BiSad, BiChevronLeft } from "react-icons/bi";
 import Navbar from "../../components/Navbar";
-import { getAssessmentQuestions, getAssessmentsMeta, saveAssessment } from "../../API";
+import {
+  getAssessmentQuestions,
+  getAssessmentsMeta,
+  saveAssessment,
+} from "../../API";
+import { FaSpinner } from "react-icons/fa";
 
 const Assessments = () => {
   const navigate = useNavigate();
@@ -21,14 +26,14 @@ const Assessments = () => {
   const [phqQuestions, setPhqQuestions] = useState([]);
   const icons = [scale, heart, hash];
   const [dassRes, setDassRes] = useState(() => {
-    const storedResponses = localStorage.getItem('dassResponses');
+    const storedResponses = localStorage.getItem("dassResponses");
     return storedResponses ? JSON.parse(storedResponses) : [];
   });
   const [epdsRes, setEpdsRes] = useState([]);
   const [phqRes, setPhqRes] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem('dassResponses', JSON.stringify(dassRes));
+    localStorage.setItem("dassResponses", JSON.stringify(dassRes));
     const runIt = async () => {
       const res = await getAssessmentsMeta();
       setAssessments(
@@ -69,15 +74,15 @@ const Assessments = () => {
   };
 
   const handleDassSubmit = async (e) => {
-    e.preventDefault()
-    const responses =JSON.stringify(dassRes)
-    console.log(responses)
-    const res = await saveAssessment({assessment: 1, responses})
-    localStorage.removeItem('quizResponses');
-    setDassRes([])
+    e.preventDefault();
+    const responses = JSON.stringify(dassRes);
+    console.log(responses);
+    const res = await saveAssessment({ assessment: 1, responses });
+    localStorage.removeItem("quizResponses");
+    setDassRes([]);
     const radioButtons = document.querySelectorAll('input[type="radio"]');
     radioButtons.forEach((radioButton) => (radioButton.checked = false));
-  }
+  };
 
   return (
     <>
@@ -93,11 +98,17 @@ const Assessments = () => {
             />
           </div>
 
-          <GradientCards
-            data={assessments}
-            bg={"white"}
-            handleCardClick={handleCardClick}
-          />
+          {assessments.length ? (
+            <GradientCards
+              data={assessments}
+              bg={"white"}
+              handleCardClick={handleCardClick}
+            />
+          ) : (
+            <div className="flex justify-center text-3xl text-gray-400">
+              <FaSpinner />
+            </div>
+          )}
         </div>
       )}
 
@@ -128,31 +139,41 @@ const Assessments = () => {
               goTo={"/assessments"}
             />
 
-            {dassQuestions?.map((q, index) => (
-              <div key={q.id} className="my-5 w-fit">
-                <h6 className="text-lg font-semibold text-gray-600">
-                  {q.id}. {q.text}
-                </h6>
-                <div className="flex flex-col gap-3 mt-2 w-full justify-between">
-                  {q.options.map((option, i) => (
-                    <div key={option.id} className="">
-                      <input
-                        type="radio"
-                        id={option.id}
-                        name={q.id}
-                        value={option.id}
-                        checked={dassRes.find((r) => r.question === q.id && r.option === option.id)}
-                        onChange={() => handleDassRes(q.id, option.id)}
-                        className="focus:accent-gray-900 accent-gray-800 mr-2"
-                      />
-                      <label>{option.text}</label>
+            {dassQuestions.length ? (
+              <>
+                {dassQuestions.map((q, index) => (
+                  <div key={q.id} className="my-5 w-fit">
+                    <h6 className="text-lg font-semibold text-gray-600">
+                      {q.id}. {q.text}
+                    </h6>
+                    <div className="flex flex-col gap-3 mt-2 w-full justify-between">
+                      {q.options.map((option, i) => (
+                        <div key={option.id} className="">
+                          <input
+                            type="radio"
+                            id={option.id}
+                            name={q.id}
+                            value={option.id}
+                            checked={dassRes.find(
+                              (r) =>
+                                r.question === q.id && r.option === option.id
+                            )}
+                            onChange={() => handleDassRes(q.id, option.id)}
+                            className="focus:accent-gray-900 accent-gray-800 mr-2"
+                          />
+                          <label>{option.text}</label>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
+                <ButtonPrimary text={"submit"} handleClick={handleDassSubmit} />
+              </>
+            ) : (
+              <div className="flex justify-center text-3xl text-gray-400">
+                <FaSpinner />
               </div>
-            ))}
-
-            <ButtonPrimary text={"submit"} handleClick={handleDassSubmit} />
+            )}
           </div>
         )}
         {type === types[1] && (
