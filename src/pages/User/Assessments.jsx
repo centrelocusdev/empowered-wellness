@@ -20,11 +20,15 @@ const Assessments = () => {
   const [epdsQuestions, setEpdsQuestions] = useState([]);
   const [phqQuestions, setPhqQuestions] = useState([]);
   const icons = [scale, heart, hash];
-  const [dassRes, setDassRes] = useState([]);
+  const [dassRes, setDassRes] = useState(() => {
+    const storedResponses = localStorage.getItem('dassResponses');
+    return storedResponses ? JSON.parse(storedResponses) : [];
+  });
   const [epdsRes, setEpdsRes] = useState([]);
   const [phqRes, setPhqRes] = useState([]);
 
   useEffect(() => {
+    localStorage.setItem('dassResponses', JSON.stringify(dassRes));
     const runIt = async () => {
       const res = await getAssessmentsMeta();
       setAssessments(
@@ -45,7 +49,7 @@ const Assessments = () => {
     };
 
     runIt();
-  }, []);
+  }, [dassRes]);
 
   const handleCardClick = async (id) => {
     console.log(id);
@@ -64,9 +68,15 @@ const Assessments = () => {
     setDassRes(newResponses);
   };
 
-  const handleDassSubmit = async () => {
-    const res = await saveAssessment({assessment: 1, responses: [...dassRes]})
-    console.log(res)
+  const handleDassSubmit = async (e) => {
+    e.preventDefault()
+    const responses =JSON.stringify(dassRes)
+    console.log(responses)
+    const res = await saveAssessment({assessment: 1, responses})
+    localStorage.removeItem('quizResponses');
+    setDassRes([])
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach((radioButton) => (radioButton.checked = false));
   }
 
   return (
@@ -118,7 +128,7 @@ const Assessments = () => {
               goTo={"/assessments"}
             />
 
-            {dassQuestions.map((q, index) => (
+            {dassQuestions?.map((q, index) => (
               <div key={q.id} className="my-5 w-fit">
                 <h6 className="text-lg font-semibold text-gray-600">
                   {q.id}. {q.text}
@@ -130,8 +140,9 @@ const Assessments = () => {
                         type="radio"
                         id={option.id}
                         name={q.id}
-                        value={option.score}
-                        onChange={() => handleDassRes(q.id, option.score)}
+                        value={option.id}
+                        checked={dassRes.find((r) => r.question === q.id && r.option === option.id)}
+                        onChange={() => handleDassRes(q.id, option.id)}
                         className="focus:accent-gray-900 accent-gray-800 mr-2"
                       />
                       <label>{option.text}</label>
