@@ -7,16 +7,14 @@ import SettingsInput from "../../components/SettingsInput";
 
 const Profile = ({ user }) => {
   const [editable, setEditable] = useState(true);
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
+  const [about, setAbout] = useState("");
+  const [profilePic, setProfilePic] = useState("");
   const [age, setAge] = useState("");
   const [zip, setZip] = useState("");
   const [country, setCountry] = useState("");
   const [gender, setGender] = useState("");
 
   const initData = () => {
-    setFullname(user.fullname);
-    setUsername(user.username);
     setAge(user.age);
     setZip(user.zip);
     setGender(user.gender);
@@ -36,14 +34,6 @@ const Profile = ({ user }) => {
     label: name.name,
   }));
 
-  const handleFullnameChange = (e) => {
-    setFullname(e.target.value);
-  };
-
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
-
   const handleAgeChange = (e) => {
     setAge(e.target.value);
   };
@@ -60,16 +50,24 @@ const Profile = ({ user }) => {
     setGender(e.target.value);
   };
 
+  const handleAboutChange = (e) => {
+    setAbout(e.target.value);
+  };
+
+  const handleProfilePicChange = (e) => {
+    setProfilePic(e.target.files[0]);
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     console.log("formSubmit clicked");
     const formData = {
-      fullname,
-      username,
       age,
       zip,
       gender,
       country,
+      about,
+      profilePic
     };
 
     console.log(formData);
@@ -78,7 +76,7 @@ const Profile = ({ user }) => {
   return (
     <div>
       <div className="md:flex justify-between w-full border-b">
-        <h5 className="md:text-4xl text-2xl text-fade-brown">View Profile</h5>
+        <h5 className="md:text-4xl text-2xl text-fade-brown">User Profile</h5>
 
         <ButtonPrimary
           text={"edit"}
@@ -88,20 +86,6 @@ const Profile = ({ user }) => {
       </div>
 
       <form className="mx-auto">
-        <SettingsInput
-          name={"full_name"}
-          value={fullname}
-          isRequired={true}
-          isDisbaled={editable}
-          handleChange={handleFullnameChange}
-        />
-        <SettingsInput
-          name={"user_name"}
-          value={username}
-          isRequired={true}
-          isDisbaled={editable}
-          handleChange={handleUsernameChange}
-        />
         <SettingsInput
           name={"age"}
           value={age}
@@ -157,6 +141,22 @@ const Profile = ({ user }) => {
           isRequired={true}
           isDisbaled={editable}
           handleChange={handleZipChange}
+        />
+
+        <SettingsInput
+          name={"About"}
+          value={about}
+          isRequired={true}
+          isDisbaled={editable}
+          handleChange={handleAboutChange}
+        />
+
+        <SettingsInput
+          name={"profile_picture"}
+          type={"file"}
+          isRequired={true}
+          isDisbaled={editable}
+          handleChange={handleProfilePicChange}
         />
 
         {!editable && (

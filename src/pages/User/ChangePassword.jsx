@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import SettingsInput from "../../components/SettingsInput";
+import { UpdatePassword } from "../../API";
 
-const LoginInfo = ({ user }) => {
+const ChangePassword = ({ user }) => {
   const [editable, setEditable] = useState(true);
   const [email, setEmail] = useState(user.email);
   const [currentPassword, setCurrentPassword] = useState(user.password);
@@ -30,16 +31,17 @@ const LoginInfo = ({ user }) => {
     setEmail(e.target.value);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("formSubmit clicked");
-    const formData = {
-      email,
+    console.log(currentPassword, newPassword, confirmPassword);
+    const res = await UpdatePassword({
       currentPassword,
       newPassword,
-      confirmPassword
-    }
-  }
+      confirmPassword,
+    });
+
+    console.log(res);
+  };
 
   return (
     <div>
@@ -60,12 +62,12 @@ const LoginInfo = ({ user }) => {
           name={"email"}
           value={email}
           isRequired={true}
-          isDisbaled={editable}
-          handleChange={handleEmailChange}
+          isDisbaled={true}
+          // handleChange={handleEmailChange}
         />
         <SettingsInput
           name={"current_password"}
-          type={'password'}
+          type={"password"}
           value={currentPassword}
           isRequired={true}
           isDisbaled={editable}
@@ -99,4 +101,4 @@ const LoginInfo = ({ user }) => {
   );
 };
 
-export default LoginInfo;
+export default ChangePassword;

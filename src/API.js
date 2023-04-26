@@ -95,6 +95,24 @@ export const updateUserProfie = async (formData) => {
   }
 };
 
+export const UpdatePassword = async (formData) => {
+  try {
+    console.log(formData.newPassword, formData.confirmPassword)
+    if(formData.newPassword != formData.confirmPassword) {
+      toast.error('Confirm password does not match')
+      return
+    }
+    const res = await axios.put(`${url}/change-password/`, {old_password: formData.currentPassword, new_password: formData.newPassword}, {
+      headers,
+    });
+    res.data && toast.success("update user profile info");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
 export const moodTest = async (formData) => {
   try {
     console.log(formData);
@@ -171,7 +189,7 @@ export const getAssessmentsMeta = async () => {
 export const getAssessmentQuestions = async (id) => {
   try {
     const res = await axios.get(
-      `${url}/assessments/${id}/questions/`,{ headers });
+      `${url}/assessment/${id}/questions/`,{ headers });
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -181,7 +199,7 @@ export const getAssessmentQuestions = async (id) => {
 
 export const getCompletedAssessments = async () => {
   try {
-    const res = await axios.get(`${url}/assessments/user-responses/`, {
+    const res = await axios.get(`${url}/assessment/user-responses/`, {
       headers,
     });
     return res.data;
@@ -193,7 +211,7 @@ export const getCompletedAssessments = async () => {
 
 export const saveAssessment = async (response) => {
   try {
-    const res = await axios.post(`${url}/assessments/save/`, response, { headers });
+    const res = await axios.post(`${url}/assessment/save/`, response, {headers});
     toast.success('Your response has been recorded')
     return res.data;
   } catch (err) {

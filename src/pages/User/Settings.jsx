@@ -9,14 +9,15 @@ import { BiEditAlt } from "react-icons/bi";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import SettingsInput from "../../components/SettingsInput";
 import Profile from "./Profile";
-import LoginInfo from "./LoginInfo";
+import LoginInfo from "./ChangePassword";
+import UserBasicInfo from "./UserBasicInfo";
 
 // REMINDER
 //fetch user data here and then pass it to the components
 
 const Settings = () => {
   const navigate = useNavigate();
-  const tabs = ["profile", "login information"];
+  const tabs = ["basic info", "user profile", "change password"];
   const [tab, setTab] = useState(tabs[0]);
  
   const temp_user = {
@@ -68,8 +69,9 @@ const Settings = () => {
         </div>
 
         {/* forms */}
-        {tab == tabs[0] && <Profile user={temp_user} />}
-        {tab == tabs[1] && <LoginInfo user={temp_user} />}
+        {tab == tabs[0] && <UserBasicInfo user={temp_user} />}
+        {tab == tabs[1] && <Profile user={temp_user} />}
+        {tab == tabs[2] && <LoginInfo user={temp_user} />}
       </div>
     </>
   );

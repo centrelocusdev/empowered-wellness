@@ -16,7 +16,7 @@ const SettingsInput = ({name, value, type, isRequired, isDisbaled, handleChange}
         onChange={handleChange}
         checked={value == 'male' ? 'male' : 'female'}
         autoFocus
-        className={`${!isDisbaled && 'border'} md:w-1/2 px-4 py-2 rounded-lg focus:outline-none focus:border-2 capitalize accent-gray-500 ml-1`}
+        className={`${!isDisbaled && 'border'} md:w-1/2 px-4 py-2 rounded-lg focus:outline-none focus:border-2 accent-gray-500 ml-1`}
       />
     </div>
   );
