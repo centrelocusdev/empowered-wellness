@@ -4,7 +4,7 @@ import { countries } from "countries-list";
 import { BiEditAlt } from "react-icons/bi";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import SettingsInput from "../../components/SettingsInput";
-import { getUserBasicInfo, getUserProfile } from "../../API";
+import { getUserProfile, updateUserProfile } from "../../API";
 
 const Profile = () => {
   const [editable, setEditable] = useState(true);
@@ -19,9 +19,10 @@ const Profile = () => {
     const runIt = async () => {
       const user = await getUserProfile();
       setAge(user.age);
-      setZip(user.zip);
+      setZip(user.zip_code);
       setGender(user.gender);
       setCountry(user.country);
+      setAbout(user.about)
     };
 
     runIt();
@@ -49,6 +50,7 @@ const Profile = () => {
   };
 
   const handleGenderChange = (e) => {
+    console.log(e.target.value)
     setGender(e.target.value);
   };
 
@@ -60,19 +62,24 @@ const Profile = () => {
     setProfilePic(e.target.files[0]);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("formSubmit clicked");
     const formData = {
       age,
-      zip,
+      zip_code: zip,
       gender,
       country,
       about,
-      profilePic,
+      profile_picture: profilePic,
     };
-
+    
     console.log(formData);
+    const res = await updateUserProfile(formData);
+    setAge(res?.age);
+    setZip(res?.zip);
+    setGender(res?.gender);
+    setCountry(res?.country);
+    setEditable(true)
   };
 
   return (
@@ -96,7 +103,7 @@ const Profile = () => {
           handleChange={handleAgeChange}
         />
 
-        <div className="md:flex justify-between mt-4 py-4 border-b">
+        <div className="md:flex items-center justify-between mt-4 py-4 border-b">
           <h4 htmlFor="gender" className="capitalize text-lg">
             gender
             <span className="etxt-sm text-gray-400 lowercase">(requried)</span>
@@ -105,15 +112,7 @@ const Profile = () => {
           <div className="flex gap-7 w-1/2">
             <SettingsInput
               name={"gender"}
-              type={"radio"}
-              value={"male"}
-              isDisbaled={editable}
-              handleChange={handleGenderChange}
-            />
-            <SettingsInput
-              name={"gender"}
-              type={"radio"}
-              value={"female"}
+              value={gender}
               isDisbaled={editable}
               handleChange={handleGenderChange}
             />
@@ -132,7 +131,7 @@ const Profile = () => {
               value={country}
               onChange={handleCountryChange}
               isDisabled={editable}
-              placeholder={country?.label}
+              placeholder={country}
             />
           </div>
         </div>

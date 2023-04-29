@@ -15,16 +15,15 @@ const Home = lazy(() => import("./pages/general/Home"));
 const Register = lazy(() => import("./pages/general/Register"));
 const Login = lazy(() => import("./pages/general/Login"));
 const Index = lazy(() => import("./pages/User/Index"));
-import Navbar from "./components/Navbar";
 import CrisisSupport from "./pages/general/CrisisSupport";
 import Feedback from "./pages/general/Feedback";
 import Settings from "./pages/User/Settings";
 import MyStatistics from "./pages/User/MyStatistics";
+import Result from "./pages/User/Result";
 
 function App() {
   return (
     <section>
-      {/* <Navbar /> */}
       <Suspense
         fallback={
           <div className="flex justify-center items-center min-h-screen bg-light-2 text-center text-4xl font-bold">
@@ -40,6 +39,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route element={<PvtRoutes />}>
             <Route path="/user" element={<Index />} />
+            <Route path="/result" element={<Result />} />
             <Route path="/journal" element={<Journal />} />
             <Route path="/wellness-measure" element={<WellnessMeasure />} />
             <Route path="assessments" element={<Assessments />}>

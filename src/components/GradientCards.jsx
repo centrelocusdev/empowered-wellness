@@ -16,7 +16,7 @@ const GradientCards = ({ data, bg, handleCardClick }) => {
 
   const handleClick = (url, id) => {
     navigate(url);
-    handleCardClick(id)
+    handleCardClick && handleCardClick(id)
     setDisplay(false);
   };
 
@@ -27,9 +27,7 @@ const GradientCards = ({ data, bg, handleCardClick }) => {
   return (
     <div className="w-[80%] mx-auto mb-8">
       <div
-      className={`flex justify-start mx-atuo flex-wrap gap-8 bg-${
-        bg ? bg : "gray-100"
-      }`}
+      className={`flex justify-start mx-atuo flex-wrap gap-8 bg-${bg}`}
     >
       {data.map((d, index) => (
         <div

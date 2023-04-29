@@ -36,11 +36,11 @@ const Settings = () => {
             <img src={arrow_circle} className="w-12" />
           </button>
           <div className="flex gap-3">
-            <img src={user.profile_picture ? user.profile_picture: user_temp } className="rounded-full w-20" />
+            <img src={user?.profile_picture ? user.profile_picture: user_temp } className="rounded-full w-20" />
 
             <div>
               <h5 className="text-4xl">Settings</h5>
-              <p className="text-lg mt-1">{user.email}</p>
+              <p className="text-lg mt-1">{user?.email}</p>
             </div>
           </div>
         </div>

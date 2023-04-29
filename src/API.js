@@ -19,10 +19,10 @@ const headers = {
 };
 
 export const register = async (formData) => {
-  const res = await axios.post(`${url}/register/`, formData);
-  Cookies.set("access-token", res.data.access);
-  Cookies.set("refresh-token", res.data.refresh);
   try {
+    const res = await axios.post(`${url}/register/`, formData);
+    Cookies.set("access-token", res.data.access);
+    Cookies.set("refresh-token", res.data.refresh); 
     toast.success("user logged in successfully");
     return true;
   } catch (err) {
@@ -32,10 +32,10 @@ export const register = async (formData) => {
 };
 
 export const login = async (formData) => {
-  const res = await axios.post(`${url}/login/`, formData);
-  Cookies.set("access-token", res.data.access);
-  Cookies.set("refresh-token", res.data.refresh);
   try {
+    const res = await axios.post(`${url}/login/`, formData);
+    Cookies.set("access-token", res.data.access);
+    Cookies.set("refresh-token", res.data.refresh);
     toast.success("user logged in successfully");
     return true;
   } catch (err) {
@@ -97,18 +97,18 @@ export const getUserProfile = async () => {
     const res = await axios.get(`${url}/user_profile/`, { headers });
     return res.data;
   } catch (err) {
-    toast.error(err.response.data.error);
+    // toast.error(err.response.data.error);
     return;
   }
 };
 
 export const updateUserProfile = async (formData) => {
   try {
-    const res = await axios.patch(`${url}/update_profile/`, formData, {
+    const res = await axios.patch(`${url}/user_profile/`, formData, {
       headers,
     });
     res.data && toast.success("update user profile info");
-    return true;
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
@@ -140,11 +140,80 @@ export const UpdatePassword = async (formData) => {
   }
 };
 
+export const getDoctorsList = async () => {
+  try {
+    const res = await axios.get(`${url}/doctors/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const getAllMoodTests = async () => {
+  try {
+    const res = await axios.get(`${url}/mood-data/`, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
 export const moodTest = async (formData) => {
   try {
-    console.log(formData);
     const res = await axios.put(`${url}/mood-data/`, formData, { headers });
     toast.success("your response has been recorded");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const shareMoodTestData = async (formData) => {
+  try {
+    const res = await axios.put(`${url}/email_mood_data/`, formData, {
+      headers,
+    });
+    toast.success("your data has been shared");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const shareMoodTestDataSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/email_mood_data/`, formData, {
+      headers,
+    });
+    toast.success("your data has been shared");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const viewMoodTestData = async (formData) => {
+  try {
+    const res = await axios.put(`${url}/email_mood_data_response/`, formData, {
+      headers,
+    });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const viewMoodTestDataSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/email_mood_data_response/`, formData, {
+      headers,
+    });
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -203,6 +272,56 @@ export const deleteJournal = async (id) => {
   }
 };
 
+export const shareJournalData = async (formData) => {
+  try {
+    const res = await axios.put(`${url}/email_journal_data/`, formData, {
+      headers,
+    });
+    toast.success("your data has been shared");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const shareJournalDataSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/email_journal_data/`, formData, {
+      headers,
+    });
+    toast.success("your data has been shared");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const viewJournalData = async (formData) => {
+  try {
+    const res = await axios.put(`${url}/email_journal_data_response/`, formData, {
+      headers,
+    });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const viewJournalDataSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/email_journal_data_response/`, formData, {
+      headers,
+    });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
 export const getAssessmentsMeta = async () => {
   try {
     const res = await axios.get(`${url}/assessment/`, { headers });
@@ -225,9 +344,21 @@ export const getAssessmentQuestions = async (id) => {
   }
 };
 
-export const getCompletedAssessments = async () => {
+export const getAllAssessments = async () => {
   try {
     const res = await axios.get(`${url}/assessment/user-responses/`, {
+      headers,
+    });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const getAllAssessmentsSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/assessment/user-responses/`, formData, {
       headers,
     });
     return res.data;
@@ -243,6 +374,56 @@ export const saveAssessment = async (response) => {
       headers,
     });
     toast.success("Your response has been recorded");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const shareAssessmentData = async (formData) => {
+  try {
+    const res = await axios.put(`${url}/email_assessment_data/`, formData, {
+      headers,
+    });
+    toast.success("your data has been shared");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const shareAssessmentDataSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/email_assessment_data/`, formData, {
+      headers,
+    });
+    toast.success("your data has been shared");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const viewAssessmentData = async (formData) => { 
+  try {
+    const res = await axios.put(`${url}/email_assessment_data_response/`, formData, {
+      headers,
+    });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
+export const viewAssessmentDataSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/email_assessment_data_response/`, formData, {
+      headers,
+    });
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
@@ -284,9 +465,10 @@ export const markMessageAsRead = async (message_id) => {
 
 export const sendMessage = async (formData) => {
   try {
-    const res = await axios.post(`${url}/user/send-message/`, formData, {
+    const res = await axios.post(`${url}/send_message/`, formData, {
       headers,
     });
+    res.data && toast.success('message delivered successfully')
     return res.data;
   } catch (err) {
     toast.error(err.response.data.error);

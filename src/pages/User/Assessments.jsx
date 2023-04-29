@@ -13,6 +13,7 @@ import {
   getAssessmentQuestions,
   getAssessmentsMeta,
   saveAssessment,
+  getAllAssessmentsSpan,
 } from "../../API";
 import { FaSpinner } from "react-icons/fa";
 
@@ -20,6 +21,7 @@ const Assessments = () => {
   const navigate = useNavigate();
   const { type } = useParams();
   const types = ["DASS-21", "PHQ-9", "EPDS"];
+  const [allAssessments, setAllAssessments] = useState()
   const [assessments, setAssessments] = useState([]);
   const [dassQuestions, setDassQuestions] = useState([]);
   const [epdsQuestions, setEpdsQuestions] = useState([]);
@@ -51,10 +53,17 @@ const Assessments = () => {
       setDassQuestions(await getAssessmentQuestions(1));
       setPhqQuestions(await getAssessmentQuestions(2));
       setEpdsQuestions(await getAssessmentQuestions(3));
+
+      const today = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+      console.log(today)
+      const ass = await getAllAssessmentsSpan({start_date: today, end_date: today})
+      setAllAssessments(ass)
     };
 
     runIt();
   }, [dassRes]);
+
+  console.log(allAssessments)
 
   const handleCardClick = async (id) => {
     console.log(id);

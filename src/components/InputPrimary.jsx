@@ -2,7 +2,7 @@ import React from "react";
 
 const InputPrimary = ({ label, name, placeholer, width, type }) => {
   return (
-    <div className={`text-gray-600 ${!width && 'md:w-1/2'} md:mt-5 mt-3`}>
+    <div className={`text-gray-600 ${!width && 'md:w-1/2 w-full'} md:mt-5 mt-3`}>
       <label htmlFor={name} className="capitalize font-semibold block">
         {label}
       </label>

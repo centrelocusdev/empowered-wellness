@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LargeHeading from "../../components/LargeHeading";
 import { statistics } from "../../temp_db/statistics";
-import text from "../../assets/icons/text.png";
 import Navbar from "../../components/Navbar";
 import { Bar, Line } from "react-chartjs-2";
+import { getAllAssessments } from "../../API";
+import { FiEye, FiShare2 } from "react-icons/fi";
+import ShareDataModal from "../../components/ShareDataModal";
 
 import {
   Chart as ChartJS,
@@ -29,8 +31,35 @@ ChartJS.register(
 );
 
 const MyStatistics = () => {
+  const [assessmets, setAssessments] = useState()
+  const [assessmentId, setAssessmentId] = useState('')
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const runIt = async () => {
+      const res = await getAllAssessments()
+      console.log(res)
+      setAssessments(res)
+    }
+
+    runIt()
+  }, [])
+
+  console.log(assessmets)
+
+  const handleShareClick = async (id) => {
+    setAssessmentId(id)
+    setOpen(true)
+  };
+
   return (
     <>
+      <ShareDataModal
+        type={"assessment"}
+        id={assessmentId}
+        handleCloseClick={() => setOpen(false)}
+        isOpen={open}
+      />
       <Navbar />
       <div className="md:px-8 md:w-4/5 mx-auto py-4">
         <LargeHeading text={"my statistics"} />
@@ -39,22 +68,30 @@ const MyStatistics = () => {
           <table className="mx-auto md:w-4/5 table-auto">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left"></th>
                 <th className="px-6 py-3 text-left">Assessment Name</th>
                 <th className="px-6 py-3 text-left">Time Taken</th>
+                <th className="px-6 py-3 text-left"></th>
               </tr>
             </thead>
             <tbody>
-              {statistics.map((d, key) => (
+              {assessmets?.map((d, key) => (
                 <tr key={key} className="">
-                  <td className="px-6 py-3 text-left whitespace-nowrap font-semibold flex items-center gap-2">
-                    <img src={text} /> view & share
+                  <td className="px-6 py-3 text-left whitespace-nowrap">
+                    {d.assessment.name}
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap">
-                    {d.assessment_name}
+                    {new Date(d.created_at).toDateString()}
                   </td>
-                  <td className="px-6 py-3 text-left whitespace-nowrap">
-                    {d.time_taken}
+                  <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
+                    <button onClick={(e) => {}} className="hover:text-gray-500">
+                      <FiEye />
+                    </button>
+                    <button
+                      onClick={(e) => handleShareClick(d.id)}
+                      className="hover:text-gray-500"
+                    >
+                      <FiShare2 />
+                    </button>
                   </td>
                 </tr>
               ))}

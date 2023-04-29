@@ -2,34 +2,46 @@ import React, { useEffect, useState } from "react";
 import arrow_circle from "../../assets/icons/left_arrow_circle.png";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import InputPrimary from "../../components/InputPrimary";
-import { FiPlus, FiEdit, FiShare2, FiXCircle } from "react-icons/fi";
+import { FiPlus, FiEdit, FiShare2, FiEye } from "react-icons/fi";
 import { MdOutlineDelete } from "react-icons/md";
-import { BiImageAdd } from "react-icons/bi";
 import LargeHeading from "../../components/LargeHeading";
-// import { allJournals } from "../../temp_db/journal";
 import Navbar from "../../components/Navbar";
-import { getAllJournals, createJournal, deleteJournal, updateJournal } from "../../API";
+import {
+  getAllJournals,
+  createJournal,
+  deleteJournal,
+  updateJournal,
+  getUserBasicInfo,
+} from "../../API";
+import ShareDataModal from "../../components/ShareDataModal";
+import { useNavigate } from "react-router-dom";
 
 const Journal = () => {
+  const navigate = useNavigate()
   const [details, setDetails] = useState("");
   const [close, setClose] = useState();
+  const [open, setOpen] = useState(false);
   const [toggleModal, setToggleModal] = useState(false);
+  const [journalId, setJournalId] = useState("")
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [allJournals, setAllJournals] = useState();
+  const [userId, setUserId] = useState('')
 
-  const [updatedText, setUpdatedText] = useState()
-  const [updatedTitle, setUpdatedTitle] = useState()
-  const [updatedImage, setUpdatedImage] = useState()
+  const [updatedText, setUpdatedText] = useState();
+  const [updatedTitle, setUpdatedTitle] = useState();
+  const [updatedImage, setUpdatedImage] = useState();
 
   useEffect(() => {
     setToggleModal(true);
-    const asyncCall = async () => {
+    const runIt = async () => {
       const journals = await getAllJournals();
       setAllJournals(journals);
+      const user = await getUserBasicInfo()
+      setUserId(user.id)
     };
-    asyncCall();
+    runIt();
   }, []);
 
   const handleFileSelect = (e) => {
@@ -49,7 +61,7 @@ const Journal = () => {
     const res = await createJournal({ title, text, image });
     const journals = await getAllJournals();
     setAllJournals(journals);
-    setToggleModal(true)
+    setToggleModal(true);
   };
 
   const handleDeleteJournal = async (id) => {
@@ -64,16 +76,16 @@ const Journal = () => {
       id,
       title: updatedTitle,
       text: updatedText,
-      image: updatedImage
-    })
-    setClose(true)
-  }
+      image: updatedImage,
+    });
+    setClose(true);
+  };
 
   const handleEditClick = (d) => {
     setDetails(d);
-    setUpdatedTitle(d.title  )
-    setUpdatedText(d.text)
-    setUpdatedImage(d.image)
+    setUpdatedTitle(d.title);
+    setUpdatedText(d.text);
+    setUpdatedImage(d.image);
     setClose(false);
   };
 
@@ -81,12 +93,26 @@ const Journal = () => {
     setClose(true);
   };
 
+  const handleViewClick = (id) => {
+    navigate(`/result?type=journal&id=${id}&user_id=${userId}`)
+  }
+
   const handleModalClick = () => {
     setToggleModal((toggleModal) => !toggleModal);
   };
 
+  const handleShareClick = (id) => {
+    setJournalId(id)
+    setOpen(true)
+  }
   return (
     <>
+      <ShareDataModal
+        type={"journal"}
+        id={journalId}
+        handleCloseClick={() => setOpen(false)}
+        isOpen={open}
+      />
       <div
         className={`${toggleModal && "hidden"}
     h-screen w-screen bg-[rgba(0,0,0,0.4)] fixed flex justify-center items-center`}
@@ -179,6 +205,12 @@ const Journal = () => {
                         {new Date(d.created_at).toDateString()}
                       </td>
                       <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
+                      <button
+                          onClick={(e) => handleViewClick(d.id)}
+                          className="hover:text-gray-500"
+                        >
+                          <FiEye />
+                        </button>
                         <button
                           onClick={(e) => handleEditClick(d)}
                           className="hover:text-gray-500"
@@ -191,7 +223,7 @@ const Journal = () => {
                         >
                           <MdOutlineDelete />
                         </button>
-                        <button className="hover:text-gray-500">
+                        <button onClick={(e) => handleShareClick(d.id)} className="hover:text-gray-500">
                           <FiShare2 />
                         </button>
                       </td>
@@ -217,30 +249,42 @@ const Journal = () => {
             </div>
             <div className="mt-5 bg-journal bg-no-repeat  bg-cover h-[17rem] rounded-3xl p-8 text-[#165759] flex flex-col justify-between">
               <div className="w-full">
-                <input value={updatedTitle} onChange={(e) => setUpdatedTitle(e.target.value)} autoFocus className="w-full md:text-4xl text-2xl capitalize bg-transparent focus:outline-none " />
+                <input
+                  value={updatedTitle}
+                  onChange={(e) => setUpdatedTitle(e.target.value)}
+                  autoFocus
+                  className="w-full md:text-4xl text-2xl capitalize bg-transparent focus:outline-none "
+                />
                 <p className="text-xl mt-3">
                   {new Date(details.created_at).toDateString()}
                 </p>
               </div>
 
               <div className="w-full flex justify-end">
-                <input type="file" onChange={(e) => setUpdatedImage(e.target.files[0])} className="file:rounded-full file:border-none file:bg-gray-800 file:text-white file:px-4 file:py-1 file:cursor-pointer w-32" />
+                <input
+                  type="file"
+                  onChange={(e) => setUpdatedImage(e.target.files[0])}
+                  className="file:rounded-full file:border-none file:bg-gray-800 file:text-white file:px-4 file:py-1 file:cursor-pointer w-32"
+                />
               </div>
             </div>
 
             <div className="my-8 text-gray-500">
-            <h6 className="text-2xl mb-2 ">Update Description</h6>
-            <input
-              type="text"
-              value={updatedText}
-              name="updatedText"
-              onChange={(e) => setUpdatedText(e.target.value)}
-              className="focus:outline-none focus:bg-blue-50  w-full md:p-8 rounded-3xl md:bg-gray-50 leading-7 md:text-left text-justify"
-            />
+              <h6 className="text-2xl mb-2 ">Update Description</h6>
+              <input
+                type="text"
+                value={updatedText}
+                name="updatedText"
+                onChange={(e) => setUpdatedText(e.target.value)}
+                className="focus:outline-none focus:bg-blue-50  w-full md:p-8 rounded-3xl md:bg-gray-50 leading-7 md:text-left text-justify"
+              />
             </div>
 
             <div className="float-right">
-              <ButtonPrimary text={"save & close"} handleClick={(e) => handleUpdateJournalClick(details.id)} />
+              <ButtonPrimary
+                text={"save & close"}
+                handleClick={(e) => handleUpdateJournalClick(details.id)}
+              />
             </div>
           </div>
         )}

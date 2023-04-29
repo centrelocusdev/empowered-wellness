@@ -61,6 +61,7 @@ const data = [
     icon: user,
     title: "Message Professional",
     desc: "Easily store and manage contact information for your healthcare providers, therapists, and other support professionals, creating a seamless network of care.",
+    url: "/message-professional"
   },
   {
     icon: board,
