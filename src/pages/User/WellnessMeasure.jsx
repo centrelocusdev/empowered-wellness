@@ -4,8 +4,10 @@ import GradientText from "../../components/GradientText";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import Navbar from "../../components/Navbar";
 import { moodTest } from "../../API";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const WellnessMeasure = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     stress: "0",
     anxiety: "0",
@@ -22,7 +24,20 @@ const WellnessMeasure = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await moodTest(formData)
-    console.log(res)
+    const {stress, depression, anxiety} = res
+    const avg = Math.ceil((stress + depression + anxiety) / 3)
+    console.log(avg)
+    if(avg >= 1 && avg <= 3) {
+      navigate('/mindfulness')
+    } else if(avg >= 4 && avg <= 5) {
+      navigate('/vision-board')
+    } else if(avg >= 6 && avg <= 7) {
+      navigate('/journal')
+    } else if(avg >= 8 && avg <= 9) {
+      navigate('/message-professional')
+    } else if(avg >= 10) {
+      navigate('/support-circle')
+    } 
   };
 
   const inputs = ["stress", "anxiety", "depression"];
