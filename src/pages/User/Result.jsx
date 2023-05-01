@@ -24,8 +24,8 @@ const Result = () => {
   const [moodTestData, setMoodTestData] = useState();
   const [journalData, setJournalData] = useState();
   const [assessmentData, setAssessmentData] = useState();
-  const [imageUrl, setImageUrl] = useState()
-  const [assessmentName, setAssessmentName] = useState('')
+  const [imageUrl, setImageUrl] = useState();
+  const [assessmentName, setAssessmentName] = useState("");
 
   const types = ["mood_test", "journal", "assessment"];
 
@@ -57,21 +57,26 @@ const Result = () => {
       runIt();
     } else if (type == types[2]) {
       const runIt = async () => {
-        const today = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
-        const res = await getAllAssessmentsSpan({start_date:today, end_date:today})
+        const today = `${new Date().getFullYear()}-${
+          new Date().getMonth() + 1
+        }-${new Date().getDate()}`;
+        const res = await getAllAssessmentsSpan({
+          start_date: today,
+          end_date: today,
+        });
         setAssessmentData(res);
       };
       runIt();
     }
 
-    assessmentData && setAssessmentName(assessmentData[0].assessment.name)
+    assessmentData && setAssessmentName(assessmentData[0].assessment.name);
   }, []);
 
   return (
     <>
       <Navbar />
       <div className="md:px-8 md:w-4/5 mx-auto p-4">
-        <LargeHeading text={"Results"} />
+        <LargeHeading text={"Results"} goTo={type == types[1] && "/journal"} />
 
         {type == types[0] && (
           <div className="">
@@ -82,12 +87,18 @@ const Result = () => {
                 <div className=" mt-6 bg-gray-50 p-8 rounded-3xl my-3">
                   {Object.keys(d).map((value) => (
                     <div className="flex md:w-3/5 mx-auto justify-between text-lg mb-2">
-                      <h5 className=" capitalize">{value}</h5>
-                      <h5>
-                        {value == "created_at"
-                          ? new Date(d[value]).toDateString()
-                          : d[value]}
-                      </h5>
+                      {value != "id" && (
+                        <>
+                          <h5 className="capitalize">
+                            {value.split("_").join(" ")}
+                          </h5>
+                          <h5>
+                            {value == "created_at"
+                              ? new Date(d[value]).toDateString()
+                              : d[value]}
+                          </h5>
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -101,11 +112,20 @@ const Result = () => {
 
             <div className="">
               {journalData?.map((d, i) => (
-                <div style={{'--image-url':`url(https://ew.thedelvierypointe.com${d.image})`}} className="bg-[image:var(--image-url)] bg-gray-600 bg-blend-multiply mt-6 bg-gray-50 p-8 rounded-3xl my-3">
+                <div
+                  style={{
+                    "--image-url": `url(https://ew.thedelvierypointe.com${d.image})`,
+                  }}
+                  className="bg-[image:var(--image-url)] bg-gray-600 bg-blend-multiply mt-6 bg-gray-50 p-8 rounded-3xl my-3"
+                >
                   {Object.keys(d).map((value) => (
-                    <div className={`md:flex md:w-3/5 bg-gray-200 mx-auto justify-between text-lg mb-2 p-2 px-8 rounded-3xl text-gray-800 font-semibold shadow-lg`}>
+                    <div
+                      className={`md:flex md:w-3/5 bg-gray-200 mx-auto justify-between text-lg mb-2 p-2 px-8 rounded-3xl text-gray-800 font-semibold shadow-lg`}
+                    >
                       <h5 className=" capitalize">{value}</h5>
-                      {value == "image" ? <h5 className="md:w-1/2">{d[value].split('/')[3]}</h5> : (
+                      {value == "image" ? (
+                        <h5 className="md:w-1/2">{d[value].split("/")[3]}</h5>
+                      ) : (
                         <h5 className="md:w-1/2">
                           {value == "created_at"
                             ? new Date(d[value]).toDateString()
@@ -127,7 +147,9 @@ const Result = () => {
               <h5 className="text-xl mt-5"></h5>
               {assessmentData?.map((d, i) => (
                 <div className="mt-6 rounded-3xl my-3">
-                  <h2 className="font-semibold">Q.{i+1}. {d.question.text}</h2>
+                  <h2 className="font-semibold">
+                    Q.{i + 1}. {d.question.text}
+                  </h2>
                   <h4 className="">Ans. {d.option.text}</h4>
                 </div>
               ))}

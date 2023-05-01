@@ -17,29 +17,31 @@ import ShareDataModal from "../../components/ShareDataModal";
 import { useNavigate } from "react-router-dom";
 
 const Journal = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [details, setDetails] = useState("");
   const [close, setClose] = useState();
   const [open, setOpen] = useState(false);
   const [toggleModal, setToggleModal] = useState(false);
-  const [journalId, setJournalId] = useState("")
+  const [journalId, setJournalId] = useState("");
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [allJournals, setAllJournals] = useState();
-  const [userId, setUserId] = useState('')
+  const [userId, setUserId] = useState("");
 
   const [updatedText, setUpdatedText] = useState();
   const [updatedTitle, setUpdatedTitle] = useState();
   const [updatedImage, setUpdatedImage] = useState();
+
+  const [imgSrc, setImgSrc] = useState("");
 
   useEffect(() => {
     setToggleModal(true);
     const runIt = async () => {
       const journals = await getAllJournals();
       setAllJournals(journals);
-      const user = await getUserBasicInfo()
-      setUserId(user.id)
+      const user = await getUserBasicInfo();
+      setUserId(user.id);
     };
     runIt();
   }, []);
@@ -71,6 +73,11 @@ const Journal = () => {
     setAllJournals(journals);
   };
 
+  const handleUploadImageChange = (e) => {
+    setUpdatedImage(e.target.files[0]);
+    setImgSrc(URL.createObjectURL(e.target.files[0]));
+  };
+
   const handleUpdateJournalClick = async (id) => {
     const res = await updateJournal({
       id,
@@ -86,6 +93,7 @@ const Journal = () => {
     setUpdatedTitle(d.title);
     setUpdatedText(d.text);
     setUpdatedImage(d.image);
+    setImgSrc(`https://ew.thedelvierypointe.com${d.image}`)
     setClose(false);
   };
 
@@ -94,17 +102,17 @@ const Journal = () => {
   };
 
   const handleViewClick = (id) => {
-    navigate(`/result?type=journal&id=${id}&user_id=${userId}`)
-  }
+    navigate(`/result?type=journal&id=${id}&user_id=${userId}`);
+  };
 
   const handleModalClick = () => {
     setToggleModal((toggleModal) => !toggleModal);
   };
 
   const handleShareClick = (id) => {
-    setJournalId(id)
-    setOpen(true)
-  }
+    setJournalId(id);
+    setOpen(true);
+  };
   return (
     <>
       <ShareDataModal
@@ -205,7 +213,7 @@ const Journal = () => {
                         {new Date(d.created_at).toDateString()}
                       </td>
                       <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
-                      <button
+                        <button
                           onClick={(e) => handleViewClick(d.id)}
                           className="hover:text-gray-500"
                         >
@@ -223,7 +231,10 @@ const Journal = () => {
                         >
                           <MdOutlineDelete />
                         </button>
-                        <button onClick={(e) => handleShareClick(d.id)} className="hover:text-gray-500">
+                        <button
+                          onClick={(e) => handleShareClick(d.id)}
+                          className="hover:text-gray-500"
+                        >
                           <FiShare2 />
                         </button>
                       </td>
@@ -247,29 +258,36 @@ const Journal = () => {
               </button>
               <h4 className="text-4xl">Journal</h4>
             </div>
-            <div className="mt-5 bg-journal bg-no-repeat  bg-cover h-[17rem] rounded-3xl p-8 text-[#165759] flex flex-col justify-between">
-              <div className="w-full">
+            <div className="mt-5 bg-journal bg-no-repeat  bg-cover h-[17rem] rounded-3xl p-8 text-[#165759] flex  justify-between">
+              <div className="w-full mr-6">
+                <label htmlFor="">Update Journal Text</label>
                 <input
                   value={updatedTitle}
                   onChange={(e) => setUpdatedTitle(e.target.value)}
                   autoFocus
-                  className="w-full md:text-4xl text-2xl capitalize bg-transparent focus:outline-none "
+                  className="w-full md:text-4xl text-2xl capitalize bg-transparent focus:outline-none focus:border-b border-[#165759] truncate"
                 />
                 <p className="text-xl mt-3">
                   {new Date(details.created_at).toDateString()}
                 </p>
               </div>
 
-              <div className="w-full flex justify-end">
+              <div className="w-full flex flex-col items-end justify-end">
+                {imgSrc && (
+                  <img
+                    src={imgSrc}
+                    className="w-32 h-32 rounded-xl mb-3 shadow-lg"
+                  />
+                )}
                 <input
                   type="file"
-                  onChange={(e) => setUpdatedImage(e.target.files[0])}
+                  onChange={handleUploadImageChange}
                   className="file:rounded-full file:border-none file:bg-gray-800 file:text-white file:px-4 file:py-1 file:cursor-pointer w-32"
                 />
               </div>
             </div>
 
-            <div className="my-8 text-gray-500">
+            <div className="my-8 text-gray-500 flex flex-col justify-between">
               <h6 className="text-2xl mb-2 ">Update Description</h6>
               <input
                 type="text"

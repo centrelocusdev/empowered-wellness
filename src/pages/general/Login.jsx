@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import yoga from "../../assets/images/yoga.png";
 import InputPrimary from "../../components/InputPrimary";
 import { Link } from "react-router-dom";
@@ -7,6 +7,9 @@ import { forgetPassword, login } from "../../API";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const redirectTo = state?.from ? state.from : '/dashboard'
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,13 +32,15 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(state);
     if (!showForgetPassword) {
       const res = await login(formData);
-      res && navigate("/user");
+
+      res && navigate(redirectTo);
       res && setFormData({ email: "", password: "" });
     } else {
       const res = await forgetPassword(formData.email);
-      console.log(res)
+      console.log(res);
       res.status == "OK" && setShowChangePassword(true);
     }
   };
@@ -58,7 +63,7 @@ const Login = () => {
   };
 
   return (
-    <section className="md:flex items-center justify-center bg-light-pink min-h-screen">
+    <section className="md:flex items-center justify-center md:bg-light-pink min-h-screen">
       <div className="md:flex gap-16 md:m-12 bg-white p-6 md:px-12 py-8 rounded-xl">
         <div className="hidden md:block">
           <img src={yoga} alt="yoga image" className="h-[500px]" />

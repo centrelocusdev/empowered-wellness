@@ -3,7 +3,7 @@ import LargeHeading from "../../components/LargeHeading";
 import { statistics } from "../../temp_db/statistics";
 import Navbar from "../../components/Navbar";
 import { Bar, Line } from "react-chartjs-2";
-import { getAllAssessments } from "../../API";
+import { getAllAssessments, getUserBasicInfo } from "../../API";
 import { FiEye, FiShare2 } from "react-icons/fi";
 import ShareDataModal from "../../components/ShareDataModal";
 
@@ -18,6 +18,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -31,21 +32,31 @@ ChartJS.register(
 );
 
 const MyStatistics = () => {
+  const navigate = useNavigate()
   const [assessmets, setAssessments] = useState()
   const [assessmentId, setAssessmentId] = useState('')
   const [open, setOpen] = useState(false)
+  const [userId, setUserId] = useState('')
 
   useEffect(() => {
     const runIt = async () => {
       const res = await getAllAssessments()
-      console.log(res)
       setAssessments(res)
+
+      const user = await getUserBasicInfo()
+      setUserId(user.id)
     }
 
     runIt()
   }, [])
 
-  console.log(assessmets)
+  const handleViewClick = async (d) => {
+    const year = new Date(d).getFullYear()
+    const month = new Date(d).getMonth() + 1
+    const day = new Date(d).getDate()
+    const date = `${year}-${month}-${day}`
+    navigate(`/result?type=assessment&user_id=${userId}&start_date=${date}&end_date=${date}`)
+  }
 
   const handleShareClick = async (id) => {
     setAssessmentId(id)
@@ -83,7 +94,7 @@ const MyStatistics = () => {
                     {new Date(d.created_at).toDateString()}
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
-                    <button onClick={(e) => {}} className="hover:text-gray-500">
+                    <button onClick={(e) => handleViewClick(d.created_at)} className="hover:text-gray-500">
                       <FiEye />
                     </button>
                     <button

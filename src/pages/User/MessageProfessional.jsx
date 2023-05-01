@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import LargeHeading from "../../components/LargeHeading";
-import arrow_circle from "../../assets/icons/left_arrow_circle.png";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import InputPrimary from "../../components/InputPrimary";
-import { FiPlus, FiEdit, FiSend, FiXCircle } from "react-icons/fi";
+import { FiSend } from "react-icons/fi";
 import { BiSend } from "react-icons/bi";
-import { MdOutlineDelete } from "react-icons/md";
-import { BiImageAdd } from "react-icons/bi";
-import { msg_prof } from "../../temp_db/msg_prof";
 import Navbar from "../../components/Navbar";
 import { getDoctorsList, sendMessage } from "../../API";
+import defaultImage from "../../assets/images/default_msg.png";
 
 const MessageProfessional = () => {
   const [details, setDetails] = useState("");
@@ -19,8 +16,10 @@ const MessageProfessional = () => {
   const [doctors, setDoctors] = useState([]);
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState("");
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
+    setImage(defaultImage);
     const runIt = async () => {
       const res = await getDoctorsList();
       const filterRes = res.map((d) => ({
@@ -48,6 +47,7 @@ const MessageProfessional = () => {
 
   const handleAttachmentChange = (e) => {
     setAttachment(e.target.files[0]);
+    setImage(URL.createObjectURL(e.target.files[0]))
   };
 
   const handleSendMessage = async () => {
@@ -56,9 +56,9 @@ const MessageProfessional = () => {
       message_text: message,
       attachment,
     });
-    setMessage('')
-    setAttachment('')
-    handleCloseButtonClick()
+    setMessage("");
+    setAttachment("");
+    handleCloseButtonClick();
   };
 
   return (
@@ -79,10 +79,10 @@ const MessageProfessional = () => {
             <table className="mx-auto md:w-4/5 table-auto">
               <thead>
                 <tr>
-                <th className="px-6 py-3 text-left">Professional Name</th>
-                <th className="px-6 py-3 text-left">Email</th>
-                <th className="px-6 py-3 text-left">Mobile</th>
-                <th className="px-6 py-3 text-left"></th>
+                  <th className="px-6 py-3 text-left">Professional Name</th>
+                  <th className="px-6 py-3 text-left">Email</th>
+                  <th className="px-6 py-3 text-left">Mobile</th>
+                  <th className="px-6 py-3 text-left"></th>
                 </tr>
               </thead>
               <tbody>
@@ -114,30 +114,35 @@ const MessageProfessional = () => {
 
         {details && (
           <div className={`${close && "hidden"}`}>
-            <div className="flex gap-4">
-              <button onClick={handleCloseButtonClick} className="w-fit">
-                <img src={arrow_circle} alt="" className="w-10" />
-              </button>
-              <h4 className="text-4xl">Message Professional</h4>
+            <div onClick={handleCloseButtonClick}>
+              <LargeHeading
+                text={"message professional"}
+                desc={
+                  "Build your provider directory by adding their contact information. Having your provider listed gives you the ability to share your data with them. When you are in need of a professional, you will have direct support."
+                }
+                goTo={"/message-professional"}
+              />
             </div>
             <div className="py-4">
-              <div onChange={handleMessageChange}>
-                <InputPrimary
-                  label={"Message"}
-                  name={"message"}
-                  placeholer={"Start typing..."}
+              <div className="w-full flex flex-col w-64">
+                <img src={image} className="w-full rounded-xl mb-3" />
+                <input
+                  type="file"
+                  onChange={handleAttachmentChange}
+                  className="file:rounded-full file:border-none file:bg-gray-800 file:text-white file:px-4 file:py-2 file:cursor-pointer w-32 -mt-16 translate-x-28"
                 />
               </div>
-              <div onChange={handleAttachmentChange}>
-                <InputPrimary
-                  label={"Attachment"}
-                  name={"attachment"}
-                  type={"file"}
-                />
+              <div className="mt-8 text-gray-500 flex flex-col justify-between">
+                <h6 className="text-lg font-semibold m-1">Message</h6>
+                <textarea name="message" placeholder="start writing your message..." onChange={handleMessageChange} className="h-[10rem] md:w-1/2 rounded-xl bg-gray-100 p-4 focus:outline-none focus:bg-blue-50"></textarea>
               </div>
             </div>
 
-            <ButtonPrimary text={"send"} icon={<BiSend />} handleClick={handleSendMessage} />
+            <ButtonPrimary
+              text={"send"}
+              icon={<BiSend />}
+              handleClick={handleSendMessage}
+            />
           </div>
         )}
       </div>

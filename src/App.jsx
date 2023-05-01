@@ -38,7 +38,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route element={<PvtRoutes />}>
-            <Route path="/user" element={<Index />} />
+            <Route path="/dashboard" element={<Index />} />
             <Route path="/result" element={<Result />} />
             <Route path="/journal" element={<Journal />} />
             <Route path="/wellness-measure" element={<WellnessMeasure />} />

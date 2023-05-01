@@ -39,7 +39,7 @@ const Home = () => {
             <ButtonPrimary
               text={"dashboard"}
               icon={<BsArrowRight />}
-              handleClick={(e) => navigate("/user")}
+              handleClick={(e) => navigate("/dashboard")}
             />
             <ButtonPrimary
               text={"Sign up"}
