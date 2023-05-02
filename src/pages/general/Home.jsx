@@ -8,12 +8,20 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import GradientText from "../../components/GradientText";
 import Modal from "../../components/Modal";
+import Cookies from "js-cookie";
 
 const Home = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const access_token = Cookies.get("access-token");
+    access_token && setIsLoggedIn(true);
+  }, []);
+
   return (
     <section className="">
-      <Modal /> 
+      <Modal />
       <Navbar loggedin={true} />
       <div className="md:flex gap-8 justify-center w-full items-center md:px-16 p-8 text-gray-700">
         <div className="md:w-1/2">
@@ -41,12 +49,14 @@ const Home = () => {
               icon={<BsArrowRight />}
               handleClick={(e) => navigate("/dashboard")}
             />
-            <ButtonPrimary
-              text={"Sign up"}
-              icon={<BsArrowRight />}
-              handleClick={(e) => navigate("/register")}
-              isLight={true}
-            />
+            {!isLoggedIn && (
+              <ButtonPrimary
+                text={"Sign up"}
+                icon={<BsArrowRight />}
+                handleClick={(e) => navigate("/register")}
+                isLight={true}
+              />
+            )}
           </div>
         </div>
 
@@ -108,7 +118,10 @@ const Home = () => {
           those we care about.
         </p>
 
-        <ButtonPrimary text={"sign up"} handleClick={(e) => navigate('/register')} />
+        <ButtonPrimary
+          text={"sign up"}
+          handleClick={(e) => navigate("/register")}
+        />
       </div>
       <Footer />
     </section>

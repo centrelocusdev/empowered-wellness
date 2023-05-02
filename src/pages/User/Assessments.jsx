@@ -84,7 +84,7 @@ const Assessments = () => {
 
   const handleDassSubmit = async (e) => {
     e.preventDefault();
-    const responses = JSON.stringify(dassRes);
+    const responses = JSON.stringify(x);
     console.log(responses);
     const res = await saveAssessment({ assessment: 1, responses });
     localStorage.removeItem("quizResponses");

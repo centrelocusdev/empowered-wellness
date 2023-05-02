@@ -3,6 +3,7 @@ import { FaArrowRight } from "react-icons/fa";
 import ButtonPrimary from "./ButtonPrimary";
 import { useNavigate } from "react-router-dom";
 import { BiPhone } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 const GradientCards = ({ data, bg, handleCardClick }) => {
   const navigate = useNavigate();
@@ -19,6 +20,16 @@ const GradientCards = ({ data, bg, handleCardClick }) => {
     handleCardClick && handleCardClick(id)
     setDisplay(false);
   };
+
+  const handlePhoneClick = (phone) => {
+    navigator.clipboard.writeText(phone)
+      .then(() => {
+        toast.success('Phone copied to clipboard!');
+      })
+      .catch(() => {
+        toast.error('Could not copy phone');
+      });
+  }
 
   useEffect(() => {
     setDisplay(true);
@@ -47,7 +58,7 @@ const GradientCards = ({ data, bg, handleCardClick }) => {
           </div>
 
           {d.phone ? (
-            <ButtonPrimary text={d.phone} icon={<BiPhone />} />
+            <ButtonPrimary text={d.phone} icon={<BiPhone />} handleClick={(e) => handlePhoneClick(d.phone)} />
           ) : (
             <div className="flex justify-end">
               <ButtonPrimary

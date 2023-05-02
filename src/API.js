@@ -506,7 +506,7 @@ export const getAllVisionBoard  = async () => {
   }
 }
 
-export const addNewVisionBoard  = async (formData) => {
+export const createVisionBoard  = async (formData) => {
   try {
     const res = await axios.put(`${url}/vision_board/`, formData, {headers})
     res.data && toast.success('vision board added successfully')
@@ -538,3 +538,14 @@ export const deleteVisionBoard = async (formData) => {
     return;
   }
 }
+
+export const updateVisionBoard = async (formData) => {
+  try {
+    const res = await axios.patch(`${url}/vision_board/`, formData, {headers})
+    res.data && toast.success('vision board added successfully')
+    return res.data
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+} 
