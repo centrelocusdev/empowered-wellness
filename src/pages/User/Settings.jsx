@@ -32,7 +32,7 @@ const Settings = () => {
       <div className="md:px-8 py-6 p-4 md:w-4/5 mx-auto">
         {/* profile and tabs */}
         <div className="flex gap-7 w-full">
-          <button onClick={(e) => navigate("/user")}>
+          <button onClick={(e) => navigate("/dashboard")}>
             <img src={arrow_circle} className="w-12" />
           </button>
           <div className="flex gap-3">

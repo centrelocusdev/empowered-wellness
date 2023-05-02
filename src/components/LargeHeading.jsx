@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const LargeHeading = ({text, desc, goTo}) => {
   const navigate = useNavigate()
   const handleClick = (e) => {
-    goTo ? navigate(goTo) : navigate('/user')
+    goTo ? navigate(goTo) : navigate('/dashboard')
   }
 
   return (
