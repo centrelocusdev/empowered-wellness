@@ -23,13 +23,10 @@ const VisionBoard = () => {
   const [currentTab, setCurrentTab] = useState(tabs[0]);
   const [vbcode, setVbcode] = useState(0);
   const [name, setName] = useState();
-  const [responses, setResponses] = useState([]);
   const [images, setImages] = useState([]);
   const [numColumns, setNumColumns] = useState(2);
   const [numRows, setNumRows] = useState(2);
-  const [edit, setEdit] = useState(false);
   const [gridImages, setGridImages] = useState([]);
-  const [gridImagesPath, setGridImagesPath] = useState([]);
 
   useEffect(() => {
     const runIt = async () => {
@@ -47,9 +44,10 @@ const VisionBoard = () => {
         } else if (vbcode == 2) {
           setGridImages((prevState) => {
             const newState = [...prevState];
-            newState[
-              placeholder_id
-            ] = `https://ew.thedelvierypointe.com${image}`;
+            newState[placeholder_id] = {
+              image: `https://ew.thedelvierypointe.com${image}`,
+              id,
+            };
             return newState;
           });
         }
@@ -63,8 +61,6 @@ const VisionBoard = () => {
     setName(template.name);
   };
 
-  const toggleEditClick = () => setEdit((prev) => !prev);
-
   const handleSelection = (event) => {
     const { value } = event.target;
     const [columns, rows] = value.split("x").map(Number);
@@ -74,23 +70,36 @@ const VisionBoard = () => {
 
   const hanldeImageChange = async (event, index, id) => {
     const file = event.target.files[0];
-    if(id) {
-      const res = await updateVisionBoard({vbcode, id, image: file})
-      console.log(res)
-    }
-    setResponses((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = file;
-      return newValues;
-    });
-    setImages((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = {
-        image: URL.createObjectURL(file),
+    if (id) {
+      const res = await updateVisionBoard({
+        vbcode,
         id,
-      };
-      return newValues;
-    });
+        placeholder_id: index,
+        image: file,
+      });
+      setImages((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[index] = {
+          image: `https://ew.thedelvierypointe.com${res.image}`,
+          id: res.id,
+        };
+        return newValues;
+      });
+    } else {
+      const res = await createVisionBoard({
+        vbcode,
+        placeholder_id: index,
+        image: file,
+      });
+      setImages((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[index] = {
+          image: `https://ew.thedelvierypointe.com${res.image}`,
+          id: res.id,
+        };
+        return newValues;
+      });
+    }
   };
 
   const generateFields = () => {
@@ -108,24 +117,22 @@ const VisionBoard = () => {
             }}
             className="w-64 rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
           >
-            {images[index] && (
-              <>
-                <label
-                  htmlFor="filePicker"
-                  className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
-                >
-                  <BsFillPencilFill />
-                </label>
-                <input
-                  id="filePicker"
-                  style={{ visibility: "hidden" }}
-                  type={"file"}
-                  onChange={(e) =>
-                    hanldeImageChange(e, index, images[index].id)
-                  }
-                ></input>
-              </>
-            )}
+            <div
+              className={`${!images[index] && "hidden"} w-6 flex justify-end`}
+            >
+              <label
+                htmlFor={`filePicker-${index}`}
+                className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+              >
+                <BsFillPencilFill />
+              </label>
+              <input
+                id={`filePicker-${index}`}
+                style={{ visibility: "hidden" }}
+                type={"file"}
+                onChange={(e) => hanldeImageChange(e, index, images[index].id)}
+              ></input>
+            </div>
             <input
               type="file"
               onChange={(e) => hanldeImageChange(e, index)}
@@ -145,98 +152,41 @@ const VisionBoard = () => {
     return fields;
   };
 
-  const handleSaveClick = async (e) => {
-    e.preventDefault();
-    const imageObjects = responses.map((image) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-
-      return new Promise((resolve, reject) => {
-        reader.onload = () => {
-          const base64 = reader.result.split(",")[1];
-          resolve(base64);
-        };
-        reader.onerror = reject;
+  const handleGridImageChange = async (event, index) => {
+    console.log("pickedd");
+    const file = event.target.files[0];
+    const id = gridImages[index]?.id;
+    if (id) {
+      const res = await updateVisionBoard({
+        vbcode,
+        id,
+        placeholder_id: index,
+        image: file,
       });
-    });
-
-    Promise.all(imageObjects).then(async (results) => {
-      if (images.length) {
-        const fd = results.map((r, i) => ({
-          placeholder_id: i,
-          image: r,
-          id: images[i].id,
-          text: "",
-          video: "",
-        }));
-        console.log(fd);
-        const jsonData = JSON.stringify(fd);
-        const res = await updateVisionBoard({ vbcode, responses: jsonData });
-        setResponses([]);
-      } else {
-        const fd = results.map((r, i) => ({
-          placeholder_id: i,
-          image: r,
-          text: "",
-          video: "",
-        }));
-        const jsonData = JSON.stringify(fd);
-        const res = await createVisionBoard({ vbcode, responses: jsonData });
-        setResponses([]);
-      }
-    });
-  };
-
-  const handleGridImageChange = async (e, i, id) => {
-    const file = e.target.files[0];
-    if(id) {
-      const res = await updateVisionBoard({vbcode, id, image: file})
-      console.log(res)
+      setGridImages((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[index] = {
+          image: `https://ew.thedelvierypointe.com${res.image}`,
+          id: res.id,
+        };
+        return newValues;
+      });
+    } else {
+      console.log("");
+      const res = await createVisionBoard({
+        vbcode,
+        placeholder_id: index,
+        image: file,
+      });
+      setGridImages((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[index] = {
+          image: `https://ew.thedelvierypointe.com${res.image}`,
+          id: res.id,
+        };
+        return newValues;
+      });
     }
-    setGridImagesPath((prevValues) => {
-      const newState = [...prevValues];
-      newState[i] = file;
-      return newState;
-    });
-    setGridImages((prevValues) => {
-      const newState = [...prevValues];
-      newState[i] = URL.createObjectURL(file);
-      return newState;
-    });
-  };
-
-  const handleGridImageSubmit = () => {
-    const imageObjects = gridImagesPath.map((image) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-
-      return new Promise((resolve, reject) => {
-        reader.onload = () => {
-          const base64 = reader.result.split(",")[1];
-          resolve(base64);
-        };
-        reader.onerror = reject;
-      });
-    });
-
-    Promise.all(imageObjects).then(async (results) => {
-      const fd = results.map((r, i) => ({
-        placeholder_id: i,
-        image: r,
-        text: "",
-        video: "",
-      }));
-      const jsonData = JSON.stringify(fd);
-      if (gridImages.length) {
-        const res = await updateVisionBoard({ vbcode, responses: jsonData });
-        console.log("updating...", res);
-        setGridImagesPath([]);
-      } else {
-        const res = await createVisionBoard({ vbcode, responses: jsonData });
-        console.log(res);
-        setGridImagesPath([]);
-      }
-    });
   };
 
   return (
@@ -285,12 +235,6 @@ const VisionBoard = () => {
                   {name} <span className="text-gray-400">Template</span>
                 </h2>
               </div>
-
-              <ButtonPrimary
-                text={"save"}
-                icon={<FiSave />}
-                handleClick={handleSaveClick}
-              />
             </div>
             <div className="mt-3">
               <div className="flex items-center gap-2">
@@ -344,11 +288,6 @@ const VisionBoard = () => {
                   {name} <span className="text-gray-400">Template</span>
                 </h2>
               </div>
-              <ButtonPrimary
-                text={"save"}
-                icon={<FiSave />}
-                handleClick={handleGridImageSubmit}
-              />
             </div>
             <div className="flex flex-col mt-4 md:bg-gray-100 md:p-5 rounded-3xl">
               <div className="md:flex justify-center gap-3 md:w-4/5 mx-auto h-[30rem]">
@@ -356,7 +295,7 @@ const VisionBoard = () => {
                   <div
                     style={{
                       "--image-url": `url(${
-                        gridImages[0] ? gridImages[0] : default_img
+                        gridImages[0] ? gridImages[0].image : default_img
                       })`,
                     }}
                     className="h-1/2 w-64 bg-white rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
@@ -364,13 +303,13 @@ const VisionBoard = () => {
                     {gridImages[0] ? (
                       <>
                         <label
-                          htmlFor="filePicker"
+                          htmlFor={`filePicker-${0}`}
                           className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
                         >
                           <BsFillPencilFill />
                         </label>
                         <input
-                          id="filePicker"
+                          id={`filePicker-${0}`}
                           style={{ visibility: "hidden" }}
                           type={"file"}
                           onChange={(e) => handleGridImageChange(e, 0)}
@@ -387,7 +326,7 @@ const VisionBoard = () => {
                   <div
                     style={{
                       "--image-url": `url(${
-                        gridImages[1] ? gridImages[1] : default_img
+                        gridImages[1] ? gridImages[1].image : default_img
                       })`,
                     }}
                     className="h-1/2 w-64 bg-white rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
@@ -395,13 +334,13 @@ const VisionBoard = () => {
                     {gridImages[1] ? (
                       <>
                         <label
-                          htmlFor="filePicker"
+                          htmlFor={`filePicker-${1}`}
                           className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
                         >
                           <BsFillPencilFill />
                         </label>
                         <input
-                          id="filePicker"
+                          id={`filePicker-${1}`}
                           style={{ visibility: "hidden" }}
                           type={"file"}
                           onChange={(e) => handleGridImageChange(e, 1)}
@@ -419,7 +358,7 @@ const VisionBoard = () => {
                 <div
                   style={{
                     "--image-url": `url(${
-                      gridImages[2] ? gridImages[2] : default_img
+                      gridImages[2] ? gridImages[2].image : default_img
                     })`,
                   }}
                   className="h-[97%] md:w-72 w-64 bg-white rounded-2xl flex items-end justify-end p-5 md:mx-2 h-52 bg-[image:var(--image-url)] bg-cover"
@@ -427,13 +366,13 @@ const VisionBoard = () => {
                   {gridImages[2] ? (
                     <>
                       <label
-                        htmlFor="filePicker"
+                        htmlFor={`filePicker-${2}`}
                         className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
                       >
                         <BsFillPencilFill />
                       </label>
                       <input
-                        id="filePicker"
+                        id={`filePicker-${2}`}
                         style={{ visibility: "hidden" }}
                         type={"file"}
                         onChange={(e) => handleGridImageChange(e, 2)}
