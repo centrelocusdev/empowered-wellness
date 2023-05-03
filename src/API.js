@@ -47,7 +47,7 @@ export const login = async (formData) => {
 export const forgetPassword = async (email) => {
   try {
     const res = await axios.post(`${url}/password_reset/`, { email });
-    res.data && toast.success('please check your email address')
+    res.data && toast.success("please check your email address");
     return res.data;
   } catch (err) {
     console.log(err);
@@ -59,7 +59,7 @@ export const forgetPassword = async (email) => {
 export const forgetPasswordConfirm = async (formData) => {
   try {
     const res = await axios.post(`${url}/password_reset/confirm/`, formData);
-    res.data && toast.success('password changed successfully')
+    res.data && toast.success("password changed successfully");
     return res.data;
   } catch (err) {
     console.log(err);
@@ -67,7 +67,6 @@ export const forgetPasswordConfirm = async (formData) => {
     return;
   }
 };
-
 
 export const logout = async () => {
   Cookies.remove("access-token");
@@ -510,56 +509,61 @@ export const sendMessage = async (formData) => {
   }
 };
 
-export const getAllVisionBoard  = async () => {
+export const getAllVisionBoard = async () => {
   try {
-    const res = await axios.get(`${url}/vision_board/`, {headers})
-    return res.data
+    const res = await axios.get(`${url}/vision_board/`, { headers });
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
   }
-}
+};
 
-export const createVisionBoard  = async (formData) => {
+export const createVisionBoard = async (formData) => {
   try {
-    const res = await axios.put(`${url}/vision_board/`, formData, {headers})
-    res.data && toast.success('vision board added successfully')
-    return res.data
+    const res = await axios.put(`${url}/vision_board/`, formData, { headers });
+    res.data && toast.success("vision board added successfully");
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
   }
-}
+};
 
 export const getVisionBoardSpan = async (formData) => {
   try {
-    const res = await axios.post(`${url}/vision_board/`, formData, {headers})
-    res.data && toast.success('vision board added successfully')
-    return res.data
+    const res = await axios.post(`${url}/vision_board/`, formData, { headers });
+    res.data && toast.success("vision board added successfully");
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
   }
-}
+};
 
-export const deleteVisionBoard = async (formData) => {
+export const removeVisionBoard = async (id) => {
   try {
-    const res = await axios.delete(`${url}/vision_board/`, formData, {headers})
-    res.data && toast.success('vision board deleted successfully')
-    return res.data
+    const res = await axios.delete(`${url}/vision_board/`, {
+      data: { id },
+      headers,
+    });
+    toast.success("vision board removed successfully");
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
   }
-}
+};
 
 export const updateVisionBoard = async (formData) => {
   try {
-    const res = await axios.patch(`${url}/vision_board/`, formData, {headers})
-    res.data && toast.success('vision board added successfully')
-    return res.data
+    const res = await axios.patch(`${url}/vision_board/`, formData, {
+      headers,
+    });
+    res.data && toast.success("vision board added successfully");
+    return res.data;
   } catch (err) {
     toast.error(err.response.data.error);
     return;
   }
-} 
+};

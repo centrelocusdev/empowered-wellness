@@ -9,14 +9,14 @@ import collage from "../../assets/icons/collage.png";
 import image from "../../assets/icons/image.png";
 import ticon from "../../assets/icons/ticon.png";
 import default_img from "../../assets/images/default_msg.png";
-import colorsImage from "../../assets/images/canvas_1.png";
-import { FiSave, FiPlus } from "react-icons/fi";
 import {
   createVisionBoard,
   getAllVisionBoard,
+  removeVisionBoard,
   updateVisionBoard,
 } from "../../API";
 import { BsFillPencilFill } from "react-icons/bs";
+import { MdDelete } from "react-icons/md";
 
 const VisionBoard = () => {
   const tabs = ["collage", "text", "image"];
@@ -102,56 +102,6 @@ const VisionBoard = () => {
     }
   };
 
-  const generateFields = () => {
-    const fields = [];
-    for (let row = 0; row < numRows; row++) {
-      const rowFields = [];
-      for (let col = 0; col < numColumns; col++) {
-        const index = row * numColumns + col;
-        rowFields.push(
-          <div
-            style={{
-              "--image-url": `url(${
-                images[index] ? images[index].image : default_img
-              })`,
-            }}
-            className="w-64 rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
-          >
-            <div
-              className={`${!images[index] && "hidden"} w-6 flex justify-end`}
-            >
-              <label
-                htmlFor={`filePicker-${index}`}
-                className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
-              >
-                <BsFillPencilFill />
-              </label>
-              <input
-                id={`filePicker-${index}`}
-                style={{ visibility: "hidden" }}
-                type={"file"}
-                onChange={(e) => hanldeImageChange(e, index, images[index].id)}
-              ></input>
-            </div>
-            <input
-              type="file"
-              onChange={(e) => hanldeImageChange(e, index)}
-              className={`${
-                images[index] && "hidden"
-              } file:rounded-full file:border-none file:bg-gray-800 file:text-white file:px-4 file:py-2 file:cursor-pointer w-32 translate-x-12 mx-auto file:hover:bg-white file:hover:text-gray-800`}
-            />
-          </div>
-        );
-      }
-      fields.push(
-        <div key={row} className="flex md:flex-row flex-col w-fit mx-auto">
-          {rowFields}
-        </div>
-      );
-    }
-    return fields;
-  };
-
   const handleGridImageChange = async (event, index) => {
     console.log("pickedd");
     const file = event.target.files[0];
@@ -189,6 +139,75 @@ const VisionBoard = () => {
     }
   };
 
+  const handleRemoveClick = async (id) => {
+    const res = await removeVisionBoard(id);
+    window.location.reload();
+  };
+
+  const generateFields = () => {
+    const fields = [];
+    for (let row = 0; row < numRows; row++) {
+      const rowFields = [];
+      for (let col = 0; col < numColumns; col++) {
+        const index = row * numColumns + col;
+        rowFields.push(
+          <div
+            style={{
+              "--image-url": `url(${
+                images[index] ? images[index].image : default_img
+              })`,
+            }}
+            className="w-64 rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
+          >
+            <div
+              className={`${
+                !images[index] && "hidden"
+              } flex gap-4 justify-between w-full`}
+            >
+              <button
+                onClick={(e) => handleRemoveClick(images[index].id)}
+                title="remove"
+                className="w-fit bg-gray-800 p-2 rounded-full text-white cursor-pointer hover:bg-white hover:text-gray-800"
+              >
+                <MdDelete />
+              </button>
+              <div className="flex justify-end w-6">
+                <label
+                  title="edit"
+                  htmlFor={`filePicker-${index}`}
+                  className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+                >
+                  <BsFillPencilFill />
+                </label>
+                <input
+                  id={`filePicker-${index}`}
+                  style={{ visibility: "hidden" }}
+                  type={"file"}
+                  onChange={(e) =>
+                    hanldeImageChange(e, index, images[index].id)
+                  }
+                ></input>
+              </div>
+            </div>
+            <input
+              type="file"
+              onChange={(e) => hanldeImageChange(e, index)}
+              className={`${
+                images[index] && "hidden"
+              } file:rounded-full file:border-none file:bg-gray-800 file:text-white file:px-4 file:py-2 file:cursor-pointer w-32 translate-x-12 mx-auto file:hover:bg-white file:hover:text-gray-800`}
+            />
+          </div>
+        );
+      }
+      fields.push(
+        <div key={row} className="flex md:flex-row flex-col w-fit mx-auto">
+          {rowFields}
+        </div>
+      );
+    }
+    return fields;
+  };
+
   return (
     <>
       <Navbar />
@@ -200,14 +219,13 @@ const VisionBoard = () => {
               "Visualization is one of the most powerful mind exercises you can do. Your Vision Board should focus on how you want to feel, not just on things that you want!"
             }
           />
-          {/* <ButtonPrimary text={"add"} icon={<FiPlus />} isLight={true} /> */}
         </div>
 
         {vbcode == 0 && (
           <div className="flex md:flex-row flex-col justify-start gap-8">
             {templates.map((template, key) => (
               <div key={key} className=" rounded-2xl shadow-xl p-4">
-                <h3 className="mb-1 capitalize text-center text-lg ">
+                <h3 className="mb-2 capitalize text-center text-xl">
                   {template.name}
                 </h3>
                 <div className="w-72 flex flex-col">
@@ -248,7 +266,7 @@ const VisionBoard = () => {
                     <option value="4x3">4x3</option>
                   </select>
                 )}
-                <button
+                {/* <button
                   onClick={(e) => setCurrentTab("collage")}
                   className="border bg-gray-800 py-2 px-2 rounded"
                 >
@@ -265,7 +283,7 @@ const VisionBoard = () => {
                   className="border bg-gray-800 py-2 px-2 rounded"
                 >
                   <img src={image} alt="" />
-                </button>
+                </button> */}
               </div>
               {currentTab == tabs[0] && (
                 <div className="flex flex-col mt-4 md:bg-gray-100 md:p-5 rounded-3xl">
@@ -301,20 +319,29 @@ const VisionBoard = () => {
                     className="h-1/2 w-64 bg-white rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
                   >
                     {gridImages[0] ? (
-                      <>
-                        <label
-                          htmlFor={`filePicker-${0}`}
-                          className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+                      <div className="w-full flex justify-between">
+                        <button
+                          onClick={(e) => handleRemoveClick(gridImages[0].id)}
+                          title="remove"
+                          className="w-fit bg-gray-800 p-2 rounded-full text-white cursor-pointer hover:bg-white hover:text-gray-800"
                         >
-                          <BsFillPencilFill />
-                        </label>
-                        <input
-                          id={`filePicker-${0}`}
-                          style={{ visibility: "hidden" }}
-                          type={"file"}
-                          onChange={(e) => handleGridImageChange(e, 0)}
-                        ></input>
-                      </>
+                          <MdDelete />
+                        </button>
+                        <div className="w-6 flex">
+                          <label
+                            htmlFor={`filePicker-${0}`}
+                            className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+                          >
+                            <BsFillPencilFill />
+                          </label>
+                          <input
+                            id={`filePicker-${0}`}
+                            style={{ visibility: "hidden" }}
+                            type={"file"}
+                            onChange={(e) => handleGridImageChange(e, 0)}
+                          ></input>
+                        </div>
+                      </div>
                     ) : (
                       <input
                         type="file"
@@ -332,20 +359,29 @@ const VisionBoard = () => {
                     className="h-1/2 w-64 bg-white rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
                   >
                     {gridImages[1] ? (
-                      <>
-                        <label
-                          htmlFor={`filePicker-${1}`}
-                          className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+                      <div className="w-full flex justify-between">
+                        <button
+                          onClick={(e) => handleRemoveClick(gridImages[1].id)}
+                          title="remove"
+                          className="w-fit bg-gray-800 p-2 rounded-full text-white cursor-pointer hover:bg-white hover:text-gray-800"
                         >
-                          <BsFillPencilFill />
-                        </label>
-                        <input
-                          id={`filePicker-${1}`}
-                          style={{ visibility: "hidden" }}
-                          type={"file"}
-                          onChange={(e) => handleGridImageChange(e, 1)}
-                        ></input>
-                      </>
+                          <MdDelete />
+                        </button>
+                        <div className="w-6 flex">
+                          <label
+                            htmlFor={`filePicker-${1}`}
+                            className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+                          >
+                            <BsFillPencilFill />
+                          </label>
+                          <input
+                            id={`filePicker-${1}`}
+                            style={{ visibility: "hidden" }}
+                            type={"file"}
+                            onChange={(e) => handleGridImageChange(e, 1)}
+                          ></input>
+                        </div>
+                      </div>
                     ) : (
                       <input
                         type="file"
@@ -364,20 +400,29 @@ const VisionBoard = () => {
                   className="h-[97%] md:w-72 w-64 bg-white rounded-2xl flex items-end justify-end p-5 md:mx-2 h-52 bg-[image:var(--image-url)] bg-cover"
                 >
                   {gridImages[2] ? (
-                    <>
-                      <label
-                        htmlFor={`filePicker-${2}`}
-                        className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+                    <div className="w-full flex justify-between">
+                      <button
+                        onClick={(e) => handleRemoveClick(gridImages[2].id)}
+                        title="remove"
+                        className="w-fit bg-gray-800 p-2 rounded-full text-white cursor-pointer hover:bg-white hover:text-gray-800"
                       >
-                        <BsFillPencilFill />
-                      </label>
-                      <input
-                        id={`filePicker-${2}`}
-                        style={{ visibility: "hidden" }}
-                        type={"file"}
-                        onChange={(e) => handleGridImageChange(e, 2)}
-                      ></input>
-                    </>
+                        <MdDelete />
+                      </button>
+                      <div className="w-6 flex">
+                        <label
+                          htmlFor={`filePicker-${2}`}
+                          className="bg-gray-800 shadow-xl text-white p-2 rounded-full cursor-pointer hover:bg-white hover:text-gray-800"
+                        >
+                          <BsFillPencilFill />
+                        </label>
+                        <input
+                          id={`filePicker-${2}`}
+                          style={{ visibility: "hidden" }}
+                          type={"file"}
+                          onChange={(e) => handleGridImageChange(e, 2)}
+                        ></input>
+                      </div>
+                    </div>
                   ) : (
                     <input
                       type="file"
