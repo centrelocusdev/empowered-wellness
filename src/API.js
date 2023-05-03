@@ -47,6 +47,7 @@ export const login = async (formData) => {
 export const forgetPassword = async (email) => {
   try {
     const res = await axios.post(`${url}/password_reset/`, { email });
+    res.data && toast.success('please check your email address')
     return res.data;
   } catch (err) {
     console.log(err);
@@ -54,6 +55,19 @@ export const forgetPassword = async (email) => {
     return;
   }
 };
+
+export const forgetPasswordConfirm = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/password_reset/confirm/`, formData);
+    res.data && toast.success('password changed successfully')
+    return res.data;
+  } catch (err) {
+    console.log(err);
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
 
 export const logout = async () => {
   Cookies.remove("access-token");

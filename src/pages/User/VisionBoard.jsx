@@ -34,14 +34,14 @@ const VisionBoard = () => {
   useEffect(() => {
     const runIt = async () => {
       const res = await getAllVisionBoard();
-      console.log(res);
-      res.map(({ placeholder_id, image, vbcode }) => {
+      res.map(({ placeholder_id, image, vbcode, id }) => {
         if (vbcode == 1) {
           setImages((prevState) => {
             const newState = [...prevState];
-            newState[
-              placeholder_id
-            ] = `https://ew.thedelvierypointe.com${image}`;
+            newState[placeholder_id] = {
+              image: `https://ew.thedelvierypointe.com${image}`,
+              id,
+            };
             return newState;
           });
         } else if (vbcode == 2) {
@@ -72,8 +72,12 @@ const VisionBoard = () => {
     setNumRows(rows);
   };
 
-  const hanldeImageChange = (event, index) => {
+  const hanldeImageChange = async (event, index, id) => {
     const file = event.target.files[0];
+    if(id) {
+      const res = await updateVisionBoard({vbcode, id, image: file})
+      console.log(res)
+    }
     setResponses((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = file;
@@ -81,7 +85,10 @@ const VisionBoard = () => {
     });
     setImages((prevValues) => {
       const newValues = [...prevValues];
-      newValues[index] = URL.createObjectURL(file);
+      newValues[index] = {
+        image: URL.createObjectURL(file),
+        id,
+      };
       return newValues;
     });
   };
@@ -96,7 +103,7 @@ const VisionBoard = () => {
           <div
             style={{
               "--image-url": `url(${
-                images[index] ? images[index] : default_img
+                images[index] ? images[index].image : default_img
               })`,
             }}
             className="w-64 rounded-2xl flex items-end justify-end p-5 md:mx-2 my-3 h-52 bg-[image:var(--image-url)] bg-cover"
@@ -113,7 +120,9 @@ const VisionBoard = () => {
                   id="filePicker"
                   style={{ visibility: "hidden" }}
                   type={"file"}
-                  onChange={(e) => hanldeImageChange(e, index)}
+                  onChange={(e) =>
+                    hanldeImageChange(e, index, images[index].id)
+                  }
                 ></input>
               </>
             )}
@@ -152,25 +161,38 @@ const VisionBoard = () => {
     });
 
     Promise.all(imageObjects).then(async (results) => {
-      const fd = results.map((r, i) => ({
-        placeholder_id: i,
-        image: r,
-        text: "",
-        video: "",
-      }));
-      const jsonData = JSON.stringify(fd);
       if (images.length) {
+        const fd = results.map((r, i) => ({
+          placeholder_id: i,
+          image: r,
+          id: images[i].id,
+          text: "",
+          video: "",
+        }));
+        console.log(fd);
+        const jsonData = JSON.stringify(fd);
         const res = await updateVisionBoard({ vbcode, responses: jsonData });
         setResponses([]);
       } else {
+        const fd = results.map((r, i) => ({
+          placeholder_id: i,
+          image: r,
+          text: "",
+          video: "",
+        }));
+        const jsonData = JSON.stringify(fd);
         const res = await createVisionBoard({ vbcode, responses: jsonData });
         setResponses([]);
       }
     });
   };
 
-  const handleGridImageChange = (e, i) => {
+  const handleGridImageChange = async (e, i, id) => {
     const file = e.target.files[0];
+    if(id) {
+      const res = await updateVisionBoard({vbcode, id, image: file})
+      console.log(res)
+    }
     setGridImagesPath((prevValues) => {
       const newState = [...prevValues];
       newState[i] = file;

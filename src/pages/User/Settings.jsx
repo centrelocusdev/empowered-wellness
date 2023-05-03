@@ -6,17 +6,20 @@ import Navbar from "../../components/Navbar";
 import Profile from "./Profile";
 import LoginInfo from "./ChangePassword";
 import UserBasicInfo from "./UserBasicInfo";
-import { getUserBasicInfo } from "../../API";
+import { getUserBasicInfo, getUserProfile } from "../../API";
 
 const Settings = () => {
   const navigate = useNavigate();
   const tabs = ["basic info", "user profile", "change password"];
   const [tab, setTab] = useState(tabs[0]);
   const [user, setUser] = useState('')
+  const [pic, setPic] = useState('')
   useEffect(() => {
     const runIt = async () => {
       const res = await getUserBasicInfo();
       setUser(res)
+      const profile = await getUserProfile()
+      setPic(`https://ew.thedelvierypointe.com${profile.profile_picture}`)
     };
 
     runIt();
@@ -36,7 +39,7 @@ const Settings = () => {
             <img src={arrow_circle} className="w-12" />
           </button>
           <div className="flex gap-3">
-            <img src={user?.profile_picture ? user.profile_picture: user_temp } className="rounded-full w-20" />
+            <img src={pic ? pic: user_temp } className="rounded-full w-20" />
 
             <div>
               <h5 className="text-4xl">Settings</h5>
