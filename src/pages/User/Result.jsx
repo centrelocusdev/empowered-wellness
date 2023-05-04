@@ -32,7 +32,6 @@ const Result = () => {
   useEffect(() => {
     const init = async () => {
       const res = await getUserBasicInfo();
-      // console.log(res)
     };
 
     init();
@@ -69,7 +68,7 @@ const Result = () => {
       runIt();
     }
 
-    assessmentData && setAssessmentName(assessmentData[0].assessment.name);
+    assessmentData && setAssessmentName(assessmentData[0].name);
   }, []);
 
   return (
@@ -112,29 +111,39 @@ const Result = () => {
 
             <div className="">
               {journalData?.map((d, i) => (
-                <div
-                  style={{
-                    "--image-url": `url(https://ew.thedelvierypointe.com${d.image})`,
-                  }}
-                  className="bg-[image:var(--image-url)] bg-gray-600 bg-blend-multiply mt-6 bg-gray-50 p-8 rounded-3xl my-3"
-                >
-                  {Object.keys(d).map((value) => (
-                    <div
-                      className={`md:flex md:w-3/5 bg-gray-200 mx-auto justify-between text-lg mb-2 p-2 px-8 rounded-3xl text-gray-800 font-semibold shadow-lg`}
-                    >
-                      <h5 className=" capitalize">{value}</h5>
-                      {value == "image" ? (
-                        <h5 className="md:w-1/2">{d[value].split("/")[3]}</h5>
-                      ) : (
-                        <h5 className="md:w-1/2">
-                          {value == "created_at"
-                            ? new Date(d[value]).toDateString()
-                            : d[value]}
-                        </h5>
-                      )}
+                <>
+                  <div className="p-5 shadow-lg rounded-3xl flex gap-8 w-fit mx-auto">
+                    <img
+                      src={`https://ew.thedelvierypointe.com${d.image}`}
+                      className="w-full rounded-3xl md:w-72"
+                    />
+                    <div>
+                      {Object.keys(d).map((value) => (
+                        <div className="">
+                          {value !== "image" && value !== "id" && (
+                            <div className="capitalize mt-4 text-gray-500 mr-5">
+                              {value == "created_at" ? (
+                                <>
+                                  <h5 className="font-semibold">
+                                    {value.split("_").join(" ")}
+                                  </h5>
+                                  <h5 className="mb-2">
+                                    {new Date(d[value]).toDateString()}
+                                  </h5>
+                                </>
+                              ) : (
+                                <>
+                                  <h5 className="font-semibold">{value}</h5>
+                                  <h5 className="mb-2">{d[value]}</h5>
+                                </>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                </>
               ))}
             </div>
           </div>

@@ -11,6 +11,7 @@ import ButtonPrimary from "../../components/ButtonPrimary";
 import { FaArrowRight } from "react-icons/fa";
 import MeditationAudio from "../../components/MeditationAudio";
 import Navbar from "../../components/Navbar";
+import lily from "../../assets/audios/lily.mp3"
 
 const Mindfulness = () => {
   const navigate = useNavigate();
@@ -159,16 +160,19 @@ const meditationAudio = [
     title: "Ambient Music",
     desc: "The aim of this practice is to move your awareness around the body, paying special attention to areas of tension, gently breathing ‘into’ them.",
     from_grad: "light-skyblue",
+    audio: lily
   },
   {
     title: "Ambient Music",
     desc: "The aim of this practice is to move your awareness around the body, paying special attention to areas of tension, gently breathing ‘into’ them.",
     from_grad: "light-skyblue",
+    audio: lily
   },
   {
     title: "Ambient Music",
     desc: "The aim of this practice is to move your awareness around the body, paying special attention to areas of tension, gently breathing ‘into’ them.",
     from_grad: "light-skyblue",
+    audio: lily
   },
 ];
 
@@ -177,11 +181,13 @@ const breathingExercise = [
     title: "Tension Release",
     desc: "The aim of this practice is to move your awareness around the body, paying special attention to areas of tension, gently breathing ‘into’ them.",
     from_grad: "light-skyblue",
+    audio: lily,
   },
   {
     title: "Tension Release",
     desc: "The aim of this practice is to move your awareness around the body, paying special attention to areas of tension, gently breathing ‘into’ them.",
     from_grad: "light-skyblue",
+    audio: lily,
   },
 ];
 
@@ -190,11 +196,13 @@ const guidedMeditation = [
     title: "Tension Release",
     desc: "The aim of this practice is to move your awareness around the body, paying special attention to areas of tension, gently breathing ‘into’ them.",
     from_grad: "light-skyblue",
+    audio: lily
   },
   {
     title: "Tension Release",
     desc: "The aim of this practice is to move your awareness around the body, paying special attention to areas of tension, gently breathing ‘into’ them.",
     from_grad: "light-skyblue",
+    audio: lily
   },
 ];
 

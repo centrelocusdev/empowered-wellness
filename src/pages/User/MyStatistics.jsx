@@ -3,7 +3,7 @@ import LargeHeading from "../../components/LargeHeading";
 import { statistics } from "../../temp_db/statistics";
 import Navbar from "../../components/Navbar";
 import { Bar, Line } from "react-chartjs-2";
-import { getAllAssessments, getUserBasicInfo } from "../../API";
+import { getAllAssessments, getAllMoodTests, getUserBasicInfo } from "../../API";
 import { FiEye, FiShare2 } from "react-icons/fi";
 import ShareDataModal from "../../components/ShareDataModal";
 
@@ -33,15 +33,15 @@ ChartJS.register(
 
 const MyStatistics = () => {
   const navigate = useNavigate()
-  const [assessmets, setAssessments] = useState()
-  const [assessmentId, setAssessmentId] = useState('')
+  const [moodTests, setMoodTests] = useState()
+  const [moodTestId, setMoodTestId] = useState('')
   const [open, setOpen] = useState(false)
   const [userId, setUserId] = useState('')
 
   useEffect(() => {
     const runIt = async () => {
-      const res = await getAllAssessments()
-      setAssessments(res)
+      const res = await getAllMoodTests()
+      setMoodTests(res)
 
       const user = await getUserBasicInfo()
       setUserId(user.id)
@@ -50,24 +50,23 @@ const MyStatistics = () => {
     runIt()
   }, [])
 
-  const handleViewClick = async (d) => {
-    const year = new Date(d).getFullYear()
-    const month = new Date(d).getMonth() + 1
-    const day = new Date(d).getDate()
-    const date = `${year}-${month}-${day}`
-    navigate(`/result?type=assessment&user_id=${userId}&start_date=${date}&end_date=${date}`)
-  }
+  const handleViewClick = async (id) => {
+    // const year = new Date(d).getFullYear()
+    // const month = new Date(d).getMonth() + 1
+    // const day = new Date(d).getDate()
+    // const date = `${year}-${month}-${day}`
+    navigate(`/result?type=mood_test&id=${id}&user_id=${userId}`)  }
 
   const handleShareClick = async (id) => {
-    setAssessmentId(id)
+    setMoodTestId(id)
     setOpen(true)
   };
 
   return (
     <>
       <ShareDataModal
-        type={"assessment"}
-        id={assessmentId}
+        type={"mood test"}
+        id={moodTestId}
         handleCloseClick={() => setOpen(false)}
         isOpen={open}
       />
@@ -79,22 +78,22 @@ const MyStatistics = () => {
           <table className="mx-auto md:w-4/5 table-auto">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left">Assessment Name</th>
+                <th className="px-6 py-3 text-left">Name</th>
                 <th className="px-6 py-3 text-left">Time Taken</th>
                 <th className="px-6 py-3 text-left"></th>
               </tr>
             </thead>
             <tbody>
-              {assessmets?.map((d, key) => (
+              {moodTests?.map((d, key) => (
                 <tr key={key} className="">
                   <td className="px-6 py-3 text-left whitespace-nowrap">
-                    {d.assessment.name}
+                    Mood Test
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap">
                     {new Date(d.created_at).toDateString()}
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
-                    <button onClick={(e) => handleViewClick(d.created_at)} className="hover:text-gray-500">
+                    <button onClick={(e) => handleViewClick(d.id)} className="hover:text-gray-500">
                       <FiEye />
                     </button>
                     <button

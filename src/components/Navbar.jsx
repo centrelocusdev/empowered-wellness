@@ -17,6 +17,7 @@ const Navbar = ({ loggedin }) => {
 
   const handleSidebar = () => {
     setSidebar((sidebar) => !sidebar);
+    setIsOpen(false)
   };
 
   const handleClick = () => {
@@ -56,7 +57,7 @@ const Navbar = ({ loggedin }) => {
       <div className={`bg-white text-gray-700  md:flex justify-between`}>
         <div
           className={`py-3 md:px-16 px-8 md:h-auto h-screen transition-all md:flex justify-between w-full  ${
-            isOpen ? "block w-full fixed z-40 bg-fade-pink" : "hidden"
+            isOpen ? "block w-full fixed z-40 bg-fade-pink text-white" : "hidden"
           }`}
         >
           <div className="md:flex hidden">
@@ -66,7 +67,7 @@ const Navbar = ({ loggedin }) => {
               className="w-20 cursor-pointer text-3xl font-bold"
             />
            {isLoggedIn && (
-            <button onClick={handleSidebar} className="text-2xl">
+            <button onClick={handleSidebar} className="text-2xl ml-2">
               <BsTextLeft />
             </button>
           )}
@@ -83,7 +84,7 @@ const Navbar = ({ loggedin }) => {
               to={"/crisis-support"}
               className="w-fit cursor-pointer hover:text-sky-400"
             >
-              Crises support
+              Crisis support
             </Link>
             {isLoggedIn ? (
               <ButtonPrimary text={"Logout"} handleClick={handleLogoutClick} />
@@ -109,13 +110,13 @@ const Navbar = ({ loggedin }) => {
             onClick={handleSidebar}
             className="bg-[rgba(0,0,0,0.4)] -translate-y-24 md:translate-y-0 w-full fixed z-10"
           >
-            <div className="h-screen mt-20 mx-2 w-[300px] bg-gray-200 rounded-3xl p-8">
+            <div className="h-screen mt-20 mx-2 w-[300px] bg-gray-200 rounded-3xl p-8 text-center">
               {actions.map((action, key) => (
                 <Link to={`/${action}`} key={key}>
                   <div
-                    className={`w-full text-lg font-semibold px-6 py-2 text-center rounded-full hover:bg-gray-800 hover:text-white hover:font-normal capitalize ${
+                    className={`w-full text-lg font-semibold px-6 py-2 my-1 rounded-full hover:bg-gray-800 hover:text-white hover:font-normal capitalize ${
                       currentTab == action &&
-                      "bg-gray-800 text-white font-normal"
+                      "bg-gray-800 text-white border font-light"
                     }`}
                   >
                     {action}
@@ -136,6 +137,7 @@ const actions = [
   "wellness-measure",
   "vision-board",
   "mindfulness",
+  "message-professional",
   "support-circle",
   "settings",
   "my-statistics",

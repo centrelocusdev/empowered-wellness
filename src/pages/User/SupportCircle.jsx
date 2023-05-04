@@ -1,38 +1,62 @@
 import React, { useEffect, useState } from "react";
 import LargeHeading from "../../components/LargeHeading";
 import Navbar from "../../components/Navbar";
-import { getAllMoodTests, getUserBasicInfo } from "../../API";
+import {
+  getAllAssessments,
+  getAllJournals,
+  getAllMoodTests,
+  getUserBasicInfo,
+} from "../../API";
 import { FiEye, FiShare2 } from "react-icons/fi";
 import ShareDataModal from "../../components/ShareDataModal";
-import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const SupportCircle = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [moodTests, setMoodTests] = useState([]);
   const [moodTestId, setMoodTestId] = useState("");
+
+  const [assessments, setAssessments] = useState([]);
+  const [assessmentId, setAssessmentId] = useState([]);
+
+  const [journals, setJournals] = useState([]);
+  const [jounalId, setJournalId] = useState("");
+
   const [open, setOpen] = useState(false);
-  const [userId, setUserId] = useState('')
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     const runIt = async () => {
-      const res = await getAllMoodTests();
-      setMoodTests(res);
-      const user = await getUserBasicInfo()
-      setUserId(user.id)
+      const moodtests_res = await getAllMoodTests();
+      setMoodTests(moodtests_res);
+
+      const assessments_res = await getAllAssessments();
+      setAssessments(assessments_res);
+
+      const journals_res = await getAllJournals();
+      setJournals(journals_res);
+
+      const user = await getUserBasicInfo();
+      setUserId(user.id);
     };
 
     runIt();
   }, []);
 
-  const handleShareClick = (id) => {
-    setMoodTestId(id);    
+  const handleShareClick = (type, id) => {
+    if (type == "mood_test") {
+      setMoodTestId(id);
+    } else if (type == "journal") {
+      setJournalId(id);
+    } else if (type == "assessment") {
+      setAssessmentId(id);
+    }
     setOpen(true);
   };
 
-  const handleViewClick = (id) => {
-    navigate(`/result?type=mood_test&id=${id}&user_id=${userId}`)
-  }
+  const handleViewClick = (type, id) => {
+    navigate(`/result?type=${type}&id=${id}&user_id=${userId}`);
+  };
 
   return (
     <>
@@ -45,35 +69,31 @@ const SupportCircle = () => {
       <Navbar />
       <div className="md:px-8 px-4 md:w-4/5 mx-auto py-4 flex flex-col gap-4">
         <LargeHeading text={"Share how you’re doing"} />
-
         <h4 className="font-semibold text-2xl text-gray-500 md:my-4">
           Opening up to others can help!
         </h4>
-
         <p>
           Sometimes you can feel as is you're the only one struggling, feeling
           isolated, lonely and unsettled.
         </p>
-
         <p>
           Opening up can help because you can realize you're not alone, get
           support, help others recognize similar things in themselves, quiet the
           negative internal "self-talk".
         </p>
-
         <p>
           Share how you're doing with someone you trust. We call that person a
           member of your support circle. That individual can be your therapist,
           partner, family member or friend.
         </p>
 
-        {moodTests?.length ? (
+        {moodTests?.length || journals.length || assessments.length ? (
           <table className="mx-auto md:w-4/5 table-auto">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left">S.N.</th>
-                <th className="px-6 py-3 text-left">Name</th>
-                <th className="px-6 py-3 text-left">Time Taken</th>
+                <th className="px-6 py-3 text-left">Type</th>
+                <th className="px-6 py-3 text-left">Title</th>
+                <th className="px-6 py-3 text-left">Date Taken</th>
                 <th className="px-6 py-3 text-left">Actions</th>
               </tr>
             </thead>
@@ -81,20 +101,77 @@ const SupportCircle = () => {
               {moodTests.map((d, i) => (
                 <tr key={d.id} className="">
                   <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
-                    {i + 1}
+                    mood test
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
-                    mood test
+                    Stress, Depression & Anxiety
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap">
                     {new Date(d.created_at).toDateString()}
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
-                    <button onClick={(e) => handleViewClick(d.id)} className="hover:text-gray-500">
+                    <button
+                      onClick={(e) => handleViewClick("mood_test", d.id)}
+                      className="hover:text-gray-500"
+                    >
                       <FiEye />
                     </button>
                     <button
-                      onClick={(e) => handleShareClick(d.id)}
+                      onClick={(e) => handleShareClick("mood_test", d.id)}
+                      className="hover:text-gray-500"
+                    >
+                      <FiShare2 />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {journals.map((d, i) => (
+                <tr key={d.id} className="">
+                  <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
+                    Journal
+                  </td>
+                  <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
+                    {d.title}
+                  </td>
+                  <td className="px-6 py-3 text-left whitespace-nowrap">
+                    {new Date(d.created_at).toDateString()}
+                  </td>
+                  <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
+                    <button
+                      onClick={(e) => handleViewClick("journal", d.id)}
+                      className="hover:text-gray-500"
+                    >
+                      <FiEye />
+                    </button>
+                    <button
+                      onClick={(e) => handleShareClick("journal", d.id)}
+                      className="hover:text-gray-500"
+                    >
+                      <FiShare2 />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {journals.map((d, i) => (
+                <tr key={d.id} className="">
+                  <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
+                    Journal
+                  </td>
+                  <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
+                    {d.title}
+                  </td>
+                  <td className="px-6 py-3 text-left whitespace-nowrap">
+                    {new Date(d.created_at).toDateString()}
+                  </td>
+                  <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
+                    <button
+                      onClick={(e) => handleViewClick("journal", d.id)}
+                      className="hover:text-gray-500"
+                    >
+                      <FiEye />
+                    </button>
+                    <button
+                      onClick={(e) => handleShareClick("journal", d.id)}
                       className="hover:text-gray-500"
                     >
                       <FiShare2 />
@@ -106,7 +183,7 @@ const SupportCircle = () => {
           </table>
         ) : (
           <div className="w-full flex justify-center text-3xl text-gray-400">
-            <FaSpinner />
+            No data available
           </div>
         )}
       </div>

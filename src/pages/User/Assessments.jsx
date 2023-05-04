@@ -21,7 +21,7 @@ const Assessments = () => {
   const navigate = useNavigate();
   const { type } = useParams();
   const types = ["DASS-21", "PHQ-9", "EPDS"];
-  const [allAssessments, setAllAssessments] = useState()
+  const [allAssessments, setAllAssessments] = useState();
   const [assessments, setAssessments] = useState([]);
   const [dassQuestions, setDassQuestions] = useState([]);
   const [epdsQuestions, setEpdsQuestions] = useState([]);
@@ -32,10 +32,15 @@ const Assessments = () => {
     return storedResponses ? JSON.parse(storedResponses) : [];
   });
   const [epdsRes, setEpdsRes] = useState([]);
-  const [phqRes, setPhqRes] = useState([]);
+  const [phqRes, setPhqRes] = useState(() => {
+    const storedResponses = localStorage.getItem("phqResponses");
+    return storedResponses ? JSON.parse(storedResponses) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem("dassResponses", JSON.stringify(dassRes));
+    localStorage.setItem("phqResponses", JSON.stringify(phqRes));
+    localStorage.setItem("epdsResponses", JSON.stringify(epdsRes));
     const runIt = async () => {
       const res = await getAssessmentsMeta();
       setAssessments(
@@ -54,13 +59,18 @@ const Assessments = () => {
       setPhqQuestions(await getAssessmentQuestions(2));
       setEpdsQuestions(await getAssessmentQuestions(3));
 
-      const today = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
-      const ass = await getAllAssessmentsSpan({start_date: today, end_date: today})
-      setAllAssessments(ass)
+      const today = `${new Date().getFullYear()}-${
+        new Date().getMonth() + 1
+      }-${new Date().getDate()}`;
+      const ass = await getAllAssessmentsSpan({
+        start_date: today,
+        end_date: today,
+      });
+      setAllAssessments(ass);
     };
 
     runIt();
-  }, [dassRes]);
+  }, []);
 
   const handleCardClick = async (id) => {
     const res = await getAssessmentQuestions(id);
@@ -77,15 +87,47 @@ const Assessments = () => {
     setDassRes(newResponses);
   };
 
-  const handleDassSubmit = async (e) => {
+  console.log(phqRes)
+
+  const handlePhqRes = (qId, oId) => {
+    console.log('changed')
+    const newResponses = [...phqRes];
+    const index = newResponses.findIndex((r) => r.question === qId);
+    if (index === -1) {
+      newResponses.push({ question: qId, option: oId });
+    } else {
+      newResponses[index].option = oId;
+    }
+    setPhqRes(newResponses);
+  };
+
+  const handleEpdsRes = (qId, oId) => {
+    const newResponses = [...epdsRes];
+    const index = newResponses.findIndex((r) => r.question === qId);
+    if (index === -1) {
+      newResponses.push({ question: qId, option: oId });
+    } else {
+      newResponses[index].option = oId;
+    }
+    setEpdsRes(newResponses);
+  };
+
+  const handleSubmit = async (e, type) => {
     e.preventDefault();
-    const responses = JSON.stringify(dassRes);
+    let responses = ''
+    if(type == 'dass') {
+      responses = JSON.stringify(dassRes);
+    } else if (type == 'phq') {
+      responses = JSON.stringify(phqRes);
+    } else if (type == 'epds') {
+      responses = JSON.stringify(epdsRes);
+    }
     const res = await saveAssessment({ assessment: 1, responses });
     localStorage.removeItem("quizResponses");
     setDassRes([]);
     const radioButtons = document.querySelectorAll('input[type="radio"]');
     radioButtons.forEach((radioButton) => (radioButton.checked = false));
-    navigate('/my-statistics')
+    navigate("/my-statistics");
   };
 
   return (
@@ -148,7 +190,7 @@ const Assessments = () => {
                 {dassQuestions.map((q, index) => (
                   <div key={q.id} className="my-5 w-fit">
                     <h6 className="text-lg font-semibold text-gray-600">
-                      {q.id}. {q.text}
+                      {index}. {q.text}
                     </h6>
                     <div className="flex flex-col gap-3 mt-2 w-full justify-between">
                       {q.options.map((option, i) => (
@@ -171,7 +213,7 @@ const Assessments = () => {
                     </div>
                   </div>
                 ))}
-                <ButtonPrimary text={"submit"} handleClick={handleDassSubmit} />
+                <ButtonPrimary text={"submit"} handleClick={(e) => handleSubmit(e, 'dass')} />
               </>
             ) : (
               <div className="flex justify-center text-3xl text-gray-400">
@@ -190,27 +232,41 @@ const Assessments = () => {
               goTo={"/assessments"}
             />
 
-            {phq.map(({ question, options }, index) => (
-              <div className="my-5 w-fit">
-                <h6 className="text-lg ">
-                  {index + 1}. {question}
-                </h6>
-                <div className="flex flex-col gap-3 w-full justify-between mt-3">
-                  {Object.values(options).map((op) => (
-                    <div className="text-base">
-                      {" "}
-                      <input
-                        type="radio"
-                        name={index}
-                        className="focus:accent-gray-900 accent-gray-700 mr-2"
-                      />
-                      <label>{op}</label>
+            {phqQuestions.length ? (
+              <>
+                {phqQuestions.map((q, index) => (
+                  <div key={q.id} className="my-5 w-fit">
+                    <h6 className="text-lg font-semibold text-gray-600">
+                      {index+1}. {q.text}
+                    </h6>
+                    <div className="flex flex-col gap-3 mt-2 w-full justify-between">
+                      {q.options.map((option, i) => (
+                        <div key={option.id} className="">
+                          <input
+                            type="radio"
+                            id={option.id}
+                            name={q.id}
+                            value={option.id}
+                            checked={phqRes.find(
+                              (r) =>
+                                r.question === q.id && r.option === option.id
+                            )}
+                            onChange={() => handlePhqRes(q.id, option.id)}
+                            className="focus:accent-gray-900 accent-gray-800 mr-2"
+                          />
+                          <label>{option.text}</label>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
+                <ButtonPrimary text={"submit"} handleClick={(e) => handleSubmit(e, 'phq')} />
+              </>
+            ) : (
+              <div className="flex justify-center text-3xl text-gray-400">
+                <FaSpinner />
               </div>
-            ))}
-            <ButtonPrimary text={"submit"} />
+            )}
           </div>
         )}
         {type === types[2] && (
