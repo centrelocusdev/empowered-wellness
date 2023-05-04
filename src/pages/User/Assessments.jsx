@@ -55,7 +55,6 @@ const Assessments = () => {
       setEpdsQuestions(await getAssessmentQuestions(3));
 
       const today = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
-      console.log(today)
       const ass = await getAllAssessmentsSpan({start_date: today, end_date: today})
       setAllAssessments(ass)
     };
@@ -63,12 +62,8 @@ const Assessments = () => {
     runIt();
   }, [dassRes]);
 
-  console.log(allAssessments)
-
   const handleCardClick = async (id) => {
-    console.log(id);
     const res = await getAssessmentQuestions(id);
-    console.log(res);
   };
 
   const handleDassRes = (qId, oId) => {
@@ -84,13 +79,13 @@ const Assessments = () => {
 
   const handleDassSubmit = async (e) => {
     e.preventDefault();
-    const responses = JSON.stringify(x);
-    console.log(responses);
+    const responses = JSON.stringify(dassRes);
     const res = await saveAssessment({ assessment: 1, responses });
     localStorage.removeItem("quizResponses");
     setDassRes([]);
     const radioButtons = document.querySelectorAll('input[type="radio"]');
     radioButtons.forEach((radioButton) => (radioButton.checked = false));
+    navigate('/my-statistics')
   };
 
   return (

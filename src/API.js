@@ -250,6 +250,7 @@ export const createJournal = async (formData) => {
       toast.error("Title can not be empty");
       return;
     }
+    console.log('')
     const res = await axios.put(`${url}/journal/`, formData, { headers });
     toast.success("your new journal has been added");
     return res.data;
