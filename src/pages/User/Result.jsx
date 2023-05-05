@@ -112,10 +112,10 @@ const Result = () => {
             <div className="">
               {journalData?.map((d, i) => (
                 <>
-                  <div className="p-5 shadow-lg rounded-3xl flex gap-8 w-fit mx-auto">
+                  <div className="p-5 shadow-lg rounded-3xl gap-8 md:w-4/5 mx-auto">
                     <img
                       src={`https://ew.thedelvierypointe.com${d.image}`}
-                      className="w-full rounded-3xl md:w-72"
+                      className="w-full rounded-3xl h-[20rem] object-cover"
                     />
                     <div>
                       {Object.keys(d).map((value) => (
@@ -124,17 +124,15 @@ const Result = () => {
                             <div className="capitalize mt-4 text-gray-500 mr-5">
                               {value == "created_at" ? (
                                 <>
-                                  <h5 className="font-semibold">
-                                    {value.split("_").join(" ")}
-                                  </h5>
-                                  <h5 className="mb-2">
+                                  <h5 className="mb-2 text-right">
                                     {new Date(d[value]).toDateString()}
                                   </h5>
                                 </>
                               ) : (
                                 <>
-                                  <h5 className="font-semibold">{value}</h5>
-                                  <h5 className="mb-2">{d[value]}</h5>
+                                  <h5 className="mb-2 text-lg">{value == 'title' ? <span className="text-3xl font-medium">{d[value]}</span> : d[value]}</h5>
+
+                                  
                                 </>
                               )}
                             </div>
