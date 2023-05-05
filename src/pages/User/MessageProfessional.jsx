@@ -125,7 +125,7 @@ const MessageProfessional = () => {
             </div>
             <div className="py-4">
               <div className="w-full flex flex-col w-64">
-                <img src={image} className="w-full rounded-xl mb-3" />
+                <img src={image} className="md:w-64 rounded-xl mb-3" />
                 <input
                   type="file"
                   onChange={handleAttachmentChange}
