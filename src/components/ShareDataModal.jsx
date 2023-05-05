@@ -94,7 +94,6 @@ const ShareDataModal = ({ type, id, handleCloseClick, isOpen }) => {
 
   return (
     <div
-    onClick={handleCloseClick}
       className={`fixed w-full h-full top-0 left-0 flex items-center justify-center transition-opacity duration-500 ease-in-out ${
         isOpen
           ? "opacity-100 pointer-events-auto bg-[rgba(0,0,0,0.3)]"

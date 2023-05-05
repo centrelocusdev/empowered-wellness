@@ -87,7 +87,7 @@ const SupportCircle = () => {
           partner, family member or friend.
         </p>
 
-        {moodTests?.length || journals.length || assessments.length ? (
+        {moodTests?.length || journals?.length || assessments?.length ? (
           <table className="mx-auto md:w-4/5 table-auto">
             <thead>
               <tr>
