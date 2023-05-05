@@ -67,7 +67,7 @@ const Register = () => {
               <InputPrimary
                 label={"email"}
                 name={"email"}
-                placeholer={"johnedoe@gmai.com"}
+                placeholer={"johnedoe@email.com"}
                 width={"full"}
               />
               <InputPrimary

@@ -16,12 +16,13 @@ import {
   getAllAssessmentsSpan,
 } from "../../API";
 import { FaSpinner } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Assessments = () => {
   const navigate = useNavigate();
   const { type } = useParams();
   const types = ["DASS-21", "PHQ-9", "EPDS"];
-  const [allAssessments, setAllAssessments] = useState();
+  const [isAlreadyTaken, setIsAlreadyToken] = useState();
   const [assessments, setAssessments] = useState([]);
   const [dassQuestions, setDassQuestions] = useState([]);
   const [epdsQuestions, setEpdsQuestions] = useState([]);
@@ -66,14 +67,17 @@ const Assessments = () => {
         start_date: today,
         end_date: today,
       });
-      setAllAssessments(ass);
+      setIsAlreadyToken(ass);
+      console.log(isAlreadyTaken)
     };
 
     runIt();
   }, []);
 
   const handleCardClick = async (id) => {
-    const res = await getAssessmentQuestions(id);
+    isAlreadyTaken?.length
+      ? toast.warning("you have already taken the test")
+      : await getAssessmentQuestions(id);
   };
 
   const handleDassRes = (qId, oId) => {
@@ -87,10 +91,8 @@ const Assessments = () => {
     setDassRes(newResponses);
   };
 
-  console.log(phqRes)
-
   const handlePhqRes = (qId, oId) => {
-    console.log('changed')
+    console.log("changed");
     const newResponses = [...phqRes];
     const index = newResponses.findIndex((r) => r.question === qId);
     if (index === -1) {
@@ -114,20 +116,26 @@ const Assessments = () => {
 
   const handleSubmit = async (e, type) => {
     e.preventDefault();
-    let responses = ''
-    if(type == 'dass') {
+    let responses = "";
+    if (type == "dass") {
       responses = JSON.stringify(dassRes);
-    } else if (type == 'phq') {
+      await saveAssessment({ assessment: 1, responses });
+      localStorage.removeItem("dassResponses");
+      setDassRes([]);
+    } else if (type == "phq") {
       responses = JSON.stringify(phqRes);
-    } else if (type == 'epds') {
+      await saveAssessment({ assessment: 2, responses });
+      localStorage.removeItem("phqResponses");
+      setPhqRes([]);
+    } else if (type == "epds") {
       responses = JSON.stringify(epdsRes);
+      await saveAssessment({ assessment: 2, responses });
+      localStorage.removeItem("epdsResponses");
+      setEpdsRes([]);
     }
-    const res = await saveAssessment({ assessment: 1, responses });
-    localStorage.removeItem("quizResponses");
-    setDassRes([]);
     const radioButtons = document.querySelectorAll('input[type="radio"]');
     radioButtons.forEach((radioButton) => (radioButton.checked = false));
-    navigate("/my-statistics");
+    navigate("/support-circle");
   };
 
   return (
@@ -190,7 +198,7 @@ const Assessments = () => {
                 {dassQuestions.map((q, index) => (
                   <div key={q.id} className="my-5 w-fit">
                     <h6 className="text-lg font-semibold text-gray-600">
-                      {index}. {q.text}
+                      {index + 1}. {q.text}
                     </h6>
                     <div className="flex flex-col gap-3 mt-2 w-full justify-between">
                       {q.options.map((option, i) => (
@@ -213,7 +221,10 @@ const Assessments = () => {
                     </div>
                   </div>
                 ))}
-                <ButtonPrimary text={"submit"} handleClick={(e) => handleSubmit(e, 'dass')} />
+                <ButtonPrimary
+                  text={"submit"}
+                  handleClick={(e) => handleSubmit(e, "dass")}
+                />
               </>
             ) : (
               <div className="flex justify-center text-3xl text-gray-400">
@@ -237,7 +248,7 @@ const Assessments = () => {
                 {phqQuestions.map((q, index) => (
                   <div key={q.id} className="my-5 w-fit">
                     <h6 className="text-lg font-semibold text-gray-600">
-                      {index+1}. {q.text}
+                      {index + 1}. {q.text}
                     </h6>
                     <div className="flex flex-col gap-3 mt-2 w-full justify-between">
                       {q.options.map((option, i) => (
@@ -260,7 +271,10 @@ const Assessments = () => {
                     </div>
                   </div>
                 ))}
-                <ButtonPrimary text={"submit"} handleClick={(e) => handleSubmit(e, 'phq')} />
+                <ButtonPrimary
+                  text={"submit"}
+                  handleClick={(e) => handleSubmit(e, "phq")}
+                />
               </>
             ) : (
               <div className="flex justify-center text-3xl text-gray-400">

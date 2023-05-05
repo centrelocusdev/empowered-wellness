@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import LargeHeading from "../../components/LargeHeading";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import InputPrimary from "../../components/InputPrimary";
-import { FiSend } from "react-icons/fi";
 import { BiSend } from "react-icons/bi";
 import Navbar from "../../components/Navbar";
 import { getDoctorsList, sendMessage } from "../../API";
@@ -51,7 +50,7 @@ const MessageProfessional = () => {
   };
 
   const handleSendMessage = async () => {
-    const res = await sendMessage({
+    await sendMessage({
       receiver_id: details.id,
       message_text: message,
       attachment,
@@ -87,7 +86,7 @@ const MessageProfessional = () => {
               </thead>
               <tbody>
                 {doctorsList.map((d, key) => (
-                  <tr key={key} className="">
+                  <tr key={key} className="border-t">
                     <td className="px-6 py-3 text-left whitespace-nowrap">
                       {d.first_name} {d.last_name}
                     </td>
@@ -98,12 +97,7 @@ const MessageProfessional = () => {
                       {d.mobile}
                     </td>
                     <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
-                      <button
-                        onClick={(e) => handleSendClick(d)}
-                        className="hover:text-gray-500"
-                      >
-                        <FiSend />
-                      </button>
+                      <ButtonPrimary text={'message'} icon={<BiSend />} handleClick={(e) => handleSendClick(d)} />
                     </td>
                   </tr>
                 ))}

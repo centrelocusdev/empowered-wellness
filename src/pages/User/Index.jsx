@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import file from "../../assets/icons/file.png";
 import hash from "../../assets/icons/hash.png";
 import board from "../../assets/icons/board.png";
@@ -13,7 +12,6 @@ import Navbar from "../../components/Navbar";
 import Modal from "../../components/Modal";
 
 const Index = () => {
-  const { name } = useParams();
   return (
     <>
       <Modal />

@@ -40,6 +40,7 @@ const Navbar = ({ loggedin }) => {
       <div className="md:hidden bg-fade-pink text-gray-50 p-4 flex justify-between text-gray-200">
         <div className="flex gap-1 md:hidden">
           <img
+            onClick={(e) => navigate('/')}
             src={logo}
             alt="logo"
             className="w-16 cursor-pointer text-3xl font-bold"
@@ -62,6 +63,7 @@ const Navbar = ({ loggedin }) => {
         >
           <div className="md:flex hidden">
             <img
+              onClick={(e) => navigate('/')}
               src={logo}
               alt="logo"
               className="w-20 cursor-pointer text-3xl font-bold"
