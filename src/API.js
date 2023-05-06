@@ -173,6 +173,16 @@ export const getAllMoodTests = async () => {
   }
 };
 
+export const getAllMoodTestsSpan = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/mood-data/`, formData, { headers });
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+};
+
 export const moodTest = async (formData) => {
   try {
     const res = await axios.put(`${url}/mood-data/`, formData, { headers });
@@ -371,9 +381,10 @@ export const getAllAssessments = async () => {
     const res = await axios.get(`${url}/assessment/user-responses/`, {
       headers,
     });
-    return res.data;
+    if (res.error) return
+    else return res.data;
   } catch (err) {
-    toast.error(err.response.data.error);
+    err.error ? toast.error(err.error) : toast.error(err.response.data.error);
     return;
   }
 };
@@ -399,8 +410,14 @@ export const saveAssessment = async (response) => {
     const res = await axios.post(`${url}/assessment/save/`, response, {
       headers,
     });
-    toast.success("Your response has been recorded");
-    return res.data;
+    if (res.data.error) {
+      toast.error(res.data.error)
+      return
+    }
+    else {
+      toast.success('your response has been recorded')
+      return res.data;
+    }
   } catch (err) {
     toast.error(err.response.data.error);
     return;
@@ -568,3 +585,16 @@ export const updateVisionBoard = async (formData) => {
     return;
   }
 };
+
+export const shareVisionBoard = async (formData) => {
+  try {
+    const res = await axios.post(`${url}/email_vision_board_data/`, formData, {
+      headers,
+    });
+    res.data && toast.success("vision board added successfully");
+    return res.data;
+  } catch (err) {
+    toast.error(err.response.data.error);
+    return;
+  }
+}

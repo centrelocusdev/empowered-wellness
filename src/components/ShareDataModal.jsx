@@ -44,7 +44,7 @@ const ShareDataModal = ({ type, id, handleCloseClick, isOpen }) => {
 
   const handleShareClick = async () => {
     let res = "";
-    if (type == "mood test") {
+    if (type == "mood_test") {
       if (startDate && endDate) {
         res = await shareMoodTestDataSpan({
           name,

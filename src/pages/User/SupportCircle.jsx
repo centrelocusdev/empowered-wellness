@@ -24,6 +24,7 @@ const SupportCircle = () => {
 
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
+  const [type, setType] = useState('')
 
   useEffect(() => {
     const runIt = async () => {
@@ -46,22 +47,30 @@ const SupportCircle = () => {
   const handleShareClick = (type, id) => {
     if (type == "mood_test") {
       setMoodTestId(id);
+      setType('mood_test')
     } else if (type == "journal") {
       setJournalId(id);
+      setType('journal')
     } else if (type == "assessment") {
-      setAssessmentId(id);
+      setType('assessment')
     }
     setOpen(true);
   };
+
+  console.log(type)
 
   const handleViewClick = (type, id) => {
     navigate(`/result?type=${type}&id=${id}&user_id=${userId}`);
   };
 
+  const handleAssessmentViewClick = (date) => {
+    navigate(`/result?type=assessment&user_id=${userId}&start_date=${date}&end_date=${date}`)
+  }
+
   return (
     <>
       <ShareDataModal
-        type={"mood test"}
+        type={type}
         id={moodTestId}
         handleCloseClick={() => setOpen(false)}
         isOpen={open}
@@ -152,26 +161,26 @@ const SupportCircle = () => {
                   </td>
                 </tr>
               ))}
-              {journals.map((d, i) => (
+              {assessments.map((d, i) => (
                 <tr key={d.id} className="">
                   <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
-                    Journal
+                    Assessment
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
-                    {d.title}
+                    {d.name}
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap">
-                    {new Date(d.created_at).toDateString()}
+                    {d.date}
                   </td>
                   <td className="px-6 py-3 text-left whitespace-nowrap flex gap-3 text-xl text-sky-400">
                     <button
-                      onClick={(e) => handleViewClick("journal", d.id)}
+                      onClick={(e) => handleAssessmentViewClick(d.date)}
                       className="hover:text-gray-500"
                     >
                       <FiEye />
                     </button>
                     <button
-                      onClick={(e) => handleShareClick("journal", d.id)}
+                      onClick={(e) => handleShareClick("assessment")}
                       className="hover:text-gray-500"
                     >
                       <FiShare2 />

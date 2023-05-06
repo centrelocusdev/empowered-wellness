@@ -14,6 +14,7 @@ import {
   getAssessmentsMeta,
   saveAssessment,
   getAllAssessmentsSpan,
+  getAllAssessments,
 } from "../../API";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -60,24 +61,27 @@ const Assessments = () => {
       setPhqQuestions(await getAssessmentQuestions(2));
       setEpdsQuestions(await getAssessmentQuestions(3));
 
-      const today = `${new Date().getFullYear()}-${
-        new Date().getMonth() + 1
-      }-${new Date().getDate()}`;
-      const ass = await getAllAssessmentsSpan({
-        start_date: today,
-        end_date: today,
-      });
-      setIsAlreadyToken(ass);
-      console.log(isAlreadyTaken)
+      const date = new Date ()
+      const today = `${date.getFullYear()}-${
+        (date.getMonth() + 1).toString().padStart(2, '0')
+      }-${(date.getDate() - 1).toString().padStart(2, '0')}`;
+      const ass = await getAllAssessments();
+      const filteredAss = ass.filter(f => f.date == today)
+      setIsAlreadyToken(filteredAss);
     };
 
     runIt();
   }, []);
 
-  const handleCardClick = async (id) => {
-    isAlreadyTaken?.length
-      ? toast.warning("you have already taken the test")
-      : await getAssessmentQuestions(id);
+  const handleCardClick = async (url, id, e) => {
+    if (isAlreadyTaken?.length) {
+      toast.warning("You have already taken the test today");
+      setAssessments(updatedItems);
+      navigate('/assessments')
+    } else {
+      await getAssessmentQuestions(id);
+      navigate(url);
+    }
   };
 
   const handleDassRes = (qId, oId) => {
@@ -92,7 +96,6 @@ const Assessments = () => {
   };
 
   const handlePhqRes = (qId, oId) => {
-    console.log("changed");
     const newResponses = [...phqRes];
     const index = newResponses.findIndex((r) => r.question === qId);
     if (index === -1) {
@@ -117,25 +120,39 @@ const Assessments = () => {
   const handleSubmit = async (e, type) => {
     e.preventDefault();
     let responses = "";
+    let success = ''
     if (type == "dass") {
-      responses = JSON.stringify(dassRes);
-      await saveAssessment({ assessment: 1, responses });
-      localStorage.removeItem("dassResponses");
-      setDassRes([]);
+      if (dassRes?.length !== dassQuestions?.length) {
+        toast.error("Please complete the assessment");
+        return
+      } else {
+        responses = JSON.stringify(dassRes);
+        success = await saveAssessment({ assessment: 1, responses });
+        localStorage.removeItem("dassResponses");
+        setDassRes([]);
+      }
     } else if (type == "phq") {
-      responses = JSON.stringify(phqRes);
-      await saveAssessment({ assessment: 2, responses });
-      localStorage.removeItem("phqResponses");
-      setPhqRes([]);
+      if (phqRes?.length !== phqQuestions?.length) {
+        toast.error("Please complete the assessment");
+      } else {
+        responses = JSON.stringify(phqRes);
+        success = await saveAssessment({ assessment: 2, responses });
+        localStorage.removeItem("phqResponses");
+        setPhqRes([]);
+      }
     } else if (type == "epds") {
-      responses = JSON.stringify(epdsRes);
-      await saveAssessment({ assessment: 2, responses });
-      localStorage.removeItem("epdsResponses");
-      setEpdsRes([]);
+      if (epdsRes?.length !== epdsQuestions?.length) {
+        toast.error("Please complete the assessment");
+      } else {
+        responses = JSON.stringify(epdsRes);
+        success = await saveAssessment({ assessment: 2, responses });
+        localStorage.removeItem("epdsResponses");
+        setEpdsRes([]);
+      }
     }
     const radioButtons = document.querySelectorAll('input[type="radio"]');
     radioButtons.forEach((radioButton) => (radioButton.checked = false));
-    navigate("/support-circle");
+    success && navigate("/support-circle");
   };
 
   return (

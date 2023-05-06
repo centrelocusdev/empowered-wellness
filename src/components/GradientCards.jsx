@@ -15,9 +15,12 @@ const GradientCards = ({ data, bg, handleCardClick }) => {
     "from-light-purple to-white",
   ];
 
-  const handleClick = (url, id) => {
-    navigate(url);
-    handleCardClick && handleCardClick(id)
+  const handleClick = (url, id, e) => {
+    if (handleCardClick) {
+      handleCardClick(url,id,e)
+    } else {
+      navigate(url);
+    }
     setDisplay(false);
   };
 
@@ -42,7 +45,7 @@ const GradientCards = ({ data, bg, handleCardClick }) => {
     >
       {data.map((d, index) => (
         <div
-          onClick={(e) => handleClick(d.url, d?.id)}
+          onClick={(e) => handleClick(d.url, d?.id, e)}
           key={index}
           className={`md:w-[30%] self-auto p-6 shadow-lg rounded-2xl text-gray-600 bg-gradient-to-bl ${
             gradientColors[index % gradientColors.length]

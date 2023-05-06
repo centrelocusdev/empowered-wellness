@@ -3,7 +3,7 @@ import LargeHeading from "../../components/LargeHeading";
 import { statistics } from "../../temp_db/statistics";
 import Navbar from "../../components/Navbar";
 import { Bar, Line } from "react-chartjs-2";
-import { getAllAssessments, getAllMoodTests, getUserBasicInfo } from "../../API";
+import { getAllAssessments, getAllAssessmentsSpan, getAllMoodTests, getUserBasicInfo } from "../../API";
 import { FiEye, FiShare2 } from "react-icons/fi";
 import ShareDataModal from "../../components/ShareDataModal";
 
@@ -37,12 +37,36 @@ const MyStatistics = () => {
   const [moodTestId, setMoodTestId] = useState('')
   const [open, setOpen] = useState(false)
   const [userId, setUserId] = useState('')
+  const [stress, setStress] = useState([])
+  const [depression, setDepression] = useState([])
+  const [anxiety, setAnxiety] = useState([])
 
   useEffect(() => {
     const runIt = async () => {
       const res = await getAllMoodTests()
-      setMoodTests(res)
 
+      const date = new Date ()
+      const lastWeek = new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000));
+      lastWeek.setDate(lastWeek.getDate() - (lastWeek.getDay() + 6) % 7 + 6);
+
+      const lastWeekDay = `${lastWeek.getFullYear()}-${
+        (lastWeek.getMonth() + 1).toString().padStart(2, '0')
+      }-${(lastWeek.getDate() - 1).toString().padStart(2, '0')}`;
+
+      const today = `${date.getFullYear()}-${
+        (date.getMonth() + 1).toString().padStart(2, '0')
+      }-${(date.getDate() - 1).toString().padStart(2, '0')}`;
+      
+
+      const resStamp = await getAllAssessmentsSpan({
+        start_date: lastWeekDay,
+        end_date: today
+      })
+      
+      setMoodTests(res)
+      setStress(res.map(f => f.stress).slice(-7))
+      setDepression(res.map(f => f.depression).slice(-7))
+      setAnxiety(res.map(f => f.anxiety).slice(-7))
       const user = await getUserBasicInfo()
       setUserId(user.id)
     }
@@ -51,15 +75,59 @@ const MyStatistics = () => {
   }, [])
 
   const handleViewClick = async (id) => {
-    // const year = new Date(d).getFullYear()
-    // const month = new Date(d).getMonth() + 1
-    // const day = new Date(d).getDate()
-    // const date = `${year}-${month}-${day}`
     navigate(`/result?type=mood_test&id=${id}&user_id=${userId}`)  }
 
   const handleShareClick = async (id) => {
     setMoodTestId(id)
     setOpen(true)
+  };
+
+  const data = {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    type: "bar",
+    datasets: [
+      {
+        label: "Stress",
+        fill: true,
+        backgroundColor: "#2FB3B7",
+        borderRadius: 50,
+        borderWidth: 0,
+        data: stress,
+        barThickness: 8,
+      },
+      {
+        label: "Depression",
+        fill: true,
+        backgroundColor: "#F572B9",
+        borderRadius: 50,
+        data: depression,
+        barThickness: 4,
+      },
+      {
+        label: "Anxiety",
+        fill: true,
+        backgroundColor: "#EDF04D",
+        borderRadius: 50,
+        borderWidth: 0,
+        data: anxiety,
+        barThickness: 8,
+      },
+    ],
+    options: {
+      responsive: true,
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+              stepSize: 5,
+            },
+          },
+        ],
+      },
+      barPercentage: 0.8,
+      categoryPercentage: 0.9,
+    },
   };
 
   return (
@@ -121,56 +189,10 @@ const MyStatistics = () => {
 };
 
 const stress = [2, 5, 3, 5, 8, 3, 7];
-const depression = [6, 1, 4, 6, 3, 9, 5];
-const anxiety = [5, 2, 7, 4, 7, 3, 9];
+// const depression = [6, 1, 4, 6, 3, 9, 5];
+// const anxiety = [5, 2, 7, 4, 7, 3, 9];
 
-const data = {
-  labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-  type: "bar",
-  datasets: [
-    {
-      label: "Stress",
-      fill: true,
-      backgroundColor: "#2FB3B7",
-      borderRadius: 50,
-      borderWidth: 0,
-      data: stress,
-      barThickness: 8,
-    },
-    {
-      label: "Depression",
-      fill: true,
-      backgroundColor: "#F572B9",
-      borderRadius: 50,
-      data: depression,
-      barThickness: 4,
-    },
-    {
-      label: "Anxiety",
-      fill: true,
-      backgroundColor: "#EDF04D",
-      borderRadius: 50,
-      borderWidth: 0,
-      data: anxiety,
-      barThickness: 8,
-    },
-  ],
-  options: {
-    responsive: true,
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-            stepSize: 5,
-          },
-        },
-      ],
-    },
-    barPercentage: 0.8,
-    categoryPercentage: 0.9,
-  },
-};
+
 
 const sum = 0;
 
