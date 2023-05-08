@@ -67,6 +67,8 @@ const SupportCircle = () => {
     navigate(`/result?type=assessment&user_id=${userId}&start_date=${date}&end_date=${date}`)
   }
 
+  console.log(assessments)
+
   return (
     <>
       <ShareDataModal

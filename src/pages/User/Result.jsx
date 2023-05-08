@@ -60,8 +60,8 @@ const Result = () => {
           new Date().getMonth() + 1
         }-${new Date().getDate()}`;
         const res = await getAllAssessmentsSpan({
-          start_date: today,
-          end_date: today,
+          start_date,
+          end_date,
         });
         setAssessmentData(res);
       };
@@ -70,6 +70,8 @@ const Result = () => {
 
     assessmentData && setAssessmentName(assessmentData[0].name);
   }, []);
+
+  console.log(assessmentData)
 
   return (
     <>
@@ -130,9 +132,7 @@ const Result = () => {
                                 </>
                               ) : (
                                 <>
-                                  <h5 className="mb-2 text-lg">{value == 'title' ? <span className="text-3xl font-medium">{d[value]}</span> : d[value]}</h5>
-
-                                  
+                                  <h5 className="mb-2 text-lg">{value == 'title' ? <span className="text-3xl font-medium">{d[value]}</span> : d[value]}</h5>                        
                                 </>
                               )}
                             </div>
@@ -146,7 +146,7 @@ const Result = () => {
             </div>
           </div>
         )}
-        {type == types[2] && (
+        {/* {type == types[2] && (
           <div className="">
             <h4 className="text-2xl border-b">Assessment - {assessmentName}</h4>
 
@@ -162,7 +162,7 @@ const Result = () => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );
