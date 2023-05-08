@@ -43,14 +43,19 @@ const MyStatistics = () => {
   const [moodTestId, setMoodTestId] = useState("");
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
-  const [stress, setStress] = useState([]);
-  const [depression, setDepression] = useState([]);
-  const [anxiety, setAnxiety] = useState([]);
+  const [stress, setStress] = useState(Array(7).fill(0));
+  const [depression, setDepression] = useState(Array(7).fill(0));
+  const [anxiety, setAnxiety] = useState(Array(7).fill(0));
 
+  const [graphData, setGraphData] = useState([]);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [labels, setLabels] = useState([]);
 
   useEffect(() => {
     const runIt = async () => {
       const res = await getAllMoodTests();
+      const user = await getUserBasicInfo();
 
       const date = new Date();
       const lastWeek = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -72,15 +77,49 @@ const MyStatistics = () => {
       });
 
       setMoodTests(res);
-      setStress(resStamp.map((f) => f.stress).slice(-7));
-      setDepression(resStamp.map((f) => f.depression).slice(-7));
-      setAnxiety(resStamp.map((f) => f.anxiety).slice(-7));
-      const user = await getUserBasicInfo();
+      setGraphData(resStamp);
       setUserId(user.id);
+    }
+
+    runIt()
+  })
+
+  useEffect(() => {
+    const runIt = async () => {
+      const s = [];
+      const d = [];
+      const a = [];
+      
+      if (graphData)
+      graphData.forEach((item) => {
+        const date = new Date(item.created_at)
+        const month = date.toLocaleString("default", { month: "short" });
+        const day = date.getDate().toString().padStart(2, "0");
+        const index = labels.indexOf(`${month} ${day}`);
+        if (index !== -1) {
+          s[index] = item.stress
+          d[index] = item.depression
+          a[index] = item.anxiety
+        }
+      });
+
+      const newLabels = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const month = d.toLocaleString("default", { month: "short" });
+        const day = d.getDate().toString().padStart(2, "0");
+        newLabels.push(`${month} ${day}`);
+      }
+      setLabels(newLabels);
+
+      setStress(s);
+      setDepression(d);
+      setAnxiety(a);      
     };
 
     runIt();
-  }, []);
+  }, [graphData]);
 
   const handleViewClick = async (id) => {
     navigate(`/result?type=mood_test&id=${id}&user_id=${userId}`);
@@ -92,7 +131,7 @@ const MyStatistics = () => {
   };
 
   const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels,
     type: "bar",
     datasets: [
       {
