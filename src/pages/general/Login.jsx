@@ -32,7 +32,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(state);
     if (!showForgetPassword) {
       const res = await login(formData);
       res && navigate(redirectTo);

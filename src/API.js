@@ -21,7 +21,9 @@ export const register = async (formData) => {
     toast.success("user logged in successfully");
     return true;
   } catch (err) {
-    toast.error(err.response.data.error);
+    err.response.data.email && toast.error(err.response.data.email[0])
+    err.response.data.password && toast.error('This password is too short or common')
+    toast.error(err.response.data?.error);
     return;
   }
 };
@@ -50,7 +52,6 @@ export const forgetPassword = async (email) => {
     res.data && toast.success("please check your email address");
     return res.data;
   } catch (err) {
-    console.log(err);
     toast.error(err.response.data.error);
     return;
   }
@@ -62,7 +63,6 @@ export const forgetPasswordConfirm = async (formData) => {
     res.data && toast.success("password changed successfully");
     return res.data;
   } catch (err) {
-    console.log(err);
     toast.error(err.response.data.error);
     return;
   }
@@ -72,7 +72,6 @@ export const logout = async () => {
   Cookies.remove("access-token");
   Cookies.remove("refresh-token");
   try {
-    console.log(refresh_token);
     const res = await axios.post(`${url}/logout/`, { refresh: refresh_token });
     res.data && toast.success("logging out");
     return true;
@@ -146,7 +145,6 @@ export const updateUserProfile = async (formData) => {
 
 export const UpdatePassword = async (formData) => {
   try {
-    console.log(formData.newPassword, formData.confirmPassword);
     if (formData.newPassword != formData.confirmPassword) {
       toast.error("Confirm password does not match");
       return;
@@ -316,7 +314,6 @@ export const createJournal = async (formData) => {
       toast.error("Title can not be empty");
       return;
     }
-    console.log("");
     const res = await axios.put(`${url}/journal/`, formData, {
       headers: {
         Authorization: `Bearer ${Cookies.get("access-token")}`,

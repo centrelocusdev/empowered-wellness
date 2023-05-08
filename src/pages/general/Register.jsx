@@ -79,16 +79,18 @@ const Register = () => {
             </div>
             <div className="md:flex gap-4">
               <InputPrimary
-                label={"password"}
+                label={"password (minimum 8 characters)"}
                 name={"password"}
-                placeholer={""}
+                placeholer={"use at least one lowercase, uppercase, decimal and special symbol"}
                 width={"full"}
+                type={'password'}
               />
               <InputPrimary
                 label={"confirm password"}
                 name={"confirm_password"}
-                placeholer={""}
+                placeholer={"Re-enter your password"}
                 width={"full"}
+                type={'password'}
               />
             </div>
 

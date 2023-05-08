@@ -57,8 +57,6 @@ const SupportCircle = () => {
     setOpen(true);
   };
 
-  console.log(type)
-
   const handleViewClick = (type, id) => {
     navigate(`/result?type=${type}&id=${id}&user_id=${userId}`);
   };
@@ -66,8 +64,6 @@ const SupportCircle = () => {
   const handleAssessmentViewClick = (date) => {
     navigate(`/result?type=assessment&user_id=${userId}&start_date=${date}&end_date=${date}`)
   }
-
-  console.log(assessments)
 
   return (
     <>
@@ -109,7 +105,7 @@ const SupportCircle = () => {
               </tr>
             </thead>
             <tbody>
-              {moodTests.map((d, i) => (
+              {moodTests?.map((d, i) => (
                 <tr key={d.id} className="">
                   <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
                     mood test
@@ -136,7 +132,7 @@ const SupportCircle = () => {
                   </td>
                 </tr>
               ))}
-              {journals.map((d, i) => (
+              {journals?.map((d, i) => (
                 <tr key={d.id} className="">
                   <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
                     Journal
@@ -163,7 +159,7 @@ const SupportCircle = () => {
                   </td>
                 </tr>
               ))}
-              {assessments.map((d, i) => (
+              {assessments?.map((d, i) => (
                 <tr key={d.id} className="">
                   <td className="px-6 py-3 text-left whitespace-nowrap capitalize">
                     Assessment
