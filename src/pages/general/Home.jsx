@@ -26,7 +26,7 @@ const Home = () => {
       <div className="md:flex gap-8 justify-center w-full items-center md:px-16 p-8 text-gray-700">
         <div className="md:w-1/2">
           <GradientText
-            text={"Welcome to Empowered Wellbeing"}
+            text={"Welcome to Empowered Wellness"}
             isUppercase={true}
           />
           <h2 className="md:text-5xl text-3xl tracking-wide">
@@ -34,7 +34,7 @@ const Home = () => {
           </h2>
 
           <p className="my-5 leading-7 text-gray-500 md:text-left text-justify">
-            At Empowered Wellbeing, we understand the importance of mental
+            At Empowered Wellness, we understand the importance of mental
             health and the need for a comprehensive approach to maintaining a
             balanced lifestyle. Our mission is to empower individuals with the
             tools, resources, and support they need to achieve their personal
@@ -72,7 +72,7 @@ const Home = () => {
           />
           <h2 className="text-4xl">
             Our innovative platform offers an all-in-one solution for managing
-            and improving your mental wellbeing
+            and improving your mental Wellness
           </h2>
         </div>
 
@@ -106,13 +106,13 @@ const Home = () => {
       </div>
       <div className="md:p-16 p-8 md:w-2/3 mx-auto flex flex-col justify-center items-center text-center">
         <GradientText
-          text={"Join the Empowered Wellbeing Community"}
+          text={"Join the Empowered Wellness Community"}
           fontSize={"3xl"}
         />
 
         <p className="text-gray-500 tracking-6 mt-5">
           Take the first step towards a happier, healthier life with Empowered
-          Wellbeing. Download our app and join our growing community of
+          Wellness. Download our app and join our growing community of
           individuals committed to supporting one another on the path to mental
           wellness. Together, we can create a brighter future for ourselves and
           those we care about.
@@ -131,7 +131,7 @@ const Home = () => {
 const left_features = [
   {
     title: "Wellness Measures",
-    desc: "Gain valuable insights into your emotional wellbeing with our mental health assessments.",
+    desc: "Gain valuable insights into your emotional Wellness with our mental health assessments.",
   },
   {
     title: "Reflective Journaling",
