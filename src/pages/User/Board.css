@@ -1,0 +1,39 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.controls {
+  margin-bottom: 10px;
+}
+
+.items {
+  max-height: 400px; /* Set a maximum height for the content container */
+  overflow: auto; /* Enable scrolling when content exceeds the container height */
+}
+
+.item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  background-color: #f7f7f7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image input {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.image img {
+  max-width: 100%;
+  max-height: 150px;
+  margin-top: 5px;
+}
+
+.text textarea {
+  width: 100%;
+  height: 100px;
+}
